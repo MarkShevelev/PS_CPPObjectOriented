@@ -145,6 +145,26 @@ void transform_test() {
 	std::cout << std::endl;
 }
 
+//алгоритм reduce с использованием операции сводит массив к одному значению
+int reduce(int *begin, int *end, int init, int(*operation)(int, int)) {
+	while (begin != end) 
+		init = operation(init, *begin++);
+	return init;
+}
+
+//использование reduce для нахождения минимума
+int min_operation(int a, int b) {
+	return b < a ? b : a;
+}
+
+void reduce_test() {
+	int origin[10] = { 1,200,-1,0,3,-2,5,-4,-1,-2 };
+	auto res = reduce(origin, origin + 10, *origin, min_operation);
+	std::for_each(origin, origin + 10, print_int);
+	std::cout << std::endl;
+	std::cout << "min: " << res << std::endl;
+}
+
 int main() {
 	if (false) test_filter_positive();
 	if (false) test_filter_even();
@@ -152,6 +172,7 @@ int main() {
 	if (false) filter_greater_than_hundred_test();
 	if (false) for_each_test();
 	if (false) transform_test();
+	if (false) reduce_test();
 
 	return 0;
 }
