@@ -64,11 +64,58 @@ void compare_string() {
 		std::cout << "No" << std::endl;
 }
 
+//строки можно модифицировать
+void modification_string() {
+	std::string a, b;
+	std::cin >> a >> b;
+
+	//строки можно соединять вместе и использованием оператора +, который создаёт новую строку
+	std::string sum = a + b;
+	std::cout << "a+b: " << sum << std::endl;
+
+	//можно добавлять данные к уже существующей строке
+	std::string c;
+	std::cin >> c;
+	c += a;
+	std::cout << "c + a: " << c << std::endl;
+	c.append(b);
+	std::cout << "c + a + b: " << c << std::endl;
+
+	//к строке можно добавлять отдельные символы в конец
+	std::cout << a << " ";
+	a.push_back('#');
+	std::cout << a << " ";
+
+	//и извлекать последний символ
+	a.pop_back();
+	std::cout << a << std::endl;
+
+	//вставка строк в середину
+	a.insert(2, b);
+	std::cout << "a insert b: " << a << std::endl;
+}
+
+//replace
+void replace_string() {
+	std::string str = "Hello World!";
+	str.replace(6, 5, "Replace");
+	std::cout << str << std::endl;
+}
+
+//substring
+void substring_string() {
+	std::string str = "Hello World!";
+	std::cout << str.substr(6) << std::endl;
+	std::cout << str.substr(0, 5) << std::endl;
+}
 
 int main() {
 	if (false) construct_string();
 	if (false) accessing_string();
 	if (false) compare_string();
+	if (false) modification_string();
+	if (false) replace_string();
+	if (false) substring_string();
 
 	return 0;
 }
