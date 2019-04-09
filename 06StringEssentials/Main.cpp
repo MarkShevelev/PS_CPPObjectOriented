@@ -31,9 +31,27 @@ void construct_string() {
 	//количество необходимой памяти определяется автоматически
 }
 
+//доступ к элементам строки, символам
+void accessing_string() {
+	std::string s("Hello String!");
+
+	//доступ к элементам строки осуществляется методами at и []
+	for (std::string::size_type pos = 0; pos != s.size(); ++pos)
+		std::cout << s[pos] << "  " << s.at(pos) << std::endl;
+	//разница между [] и .at состоит в том, что .at производит проверку выхода за пределы массива данных
+
+	//есть возможность получить доступ к первому и последнему символам
+	std::cout << s.front() << "<...>" << s.back() << std::endl;
+
+	//при необходимости можно получить доступ к массиву внутренних данных
+	//s.data()[1] = 'h';//С++ 17
+	std::cout << s.c_str() << std::endl;
+}
+
 
 int main() {
-	
+	if (false) construct_string();
+	if (false) accessing_string();
 
 	return 0;
 }
