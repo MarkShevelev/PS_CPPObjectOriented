@@ -48,10 +48,27 @@ void accessing_string() {
 	std::cout << s.c_str() << std::endl;
 }
 
+//строки можно сравнивать на точное совпадение между собой
+void compare_string() {
+	std::string s1("Abba");
+	std::string s2("Bbba");
+
+	std::cout << std::boolalpha << (s1 == s2) << " " << (s1 > s2) << " " << (s1 < s2) << std::endl;
+
+	//можно использовать метод compare, который ведёт сяебя идентично функции strcmp из языка Си
+	std::string user_input;
+	std::cin >> user_input;
+	if (0 == user_input.compare(s1))
+		std::cout << "Yes" << std::endl;
+	else
+		std::cout << "No" << std::endl;
+}
+
 
 int main() {
 	if (false) construct_string();
 	if (false) accessing_string();
+	if (false) compare_string();
 
 	return 0;
 }
