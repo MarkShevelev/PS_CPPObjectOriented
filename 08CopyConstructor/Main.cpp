@@ -167,6 +167,28 @@ void stringB_fail2() {
 	stringB_print(s1);
 }
 
+//ещё один способ избежать ошибок - явно удалить конструктор копирования
+//рассмотрим пример с простым классом, который получает указатель на массив целых чисел и удаляего в деструкторе
+class AutoArray {
+	int *arr;
+public:
+	AutoArray(int *arr) {
+		this->arr = arr;
+	}
+
+	AutoArray(AutoArray const &src) = delete; // = delete; - означает, что метод явно удалён, копирование будет недопустимо
+
+	~AutoArray() {
+		delete[] arr;
+	}
+};
+
+void autoarray_test() {
+	int *ptr = new (std::nothrow) int[10];
+	AutoArray arr(ptr);
+	//AutoArray arr2 = arr;//ошибка компиляции!
+}
+
 int main() {
 	//StringA
 	if (false) stringA_test();
