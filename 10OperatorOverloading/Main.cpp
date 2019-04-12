@@ -102,10 +102,70 @@ void velocityB_globalfunction_test() {
 	(21 * v1).print(); //т.к. точка имеет более высокий приоритет, то круглые скобки необходимы
 }
 
+//в C++ можно перегружать, т.е. наделять специальным поведением для типов, определённых пользователем, любые операторы
+//кроме: . :: ?:
+//и ключевых конструкций: sizeof и typeid
+
+//модифицирующее присваивание
+//мы можем перегружать такие операторы, как += -= *= и т.д. 
+//создадим класс Point, в котором перегрузим эти оператоы
+class Point {
+	double x, y;
+public:
+	Point(double x, double y) {
+		Point::x = x;
+		Point::y = y;
+	}
+
+	Point() : Point(0., 0.) {
+	}
+
+	void print() {
+		std::cout << "[" << x << "," << y << "]" << std::endl;
+	}
+
+	//обратите внимание на возвращаемый тип: Point& - это ссылка на объект типа Point, т.е. мы поменяли объект и сразу же сможем им воспользоваться
+	Point& operator+=(Point const &p) {
+		this->x += p.x;
+		this->y += p.y;
+		return *this; //this - указатель на текущий объект, разыменование - сам объект
+	}
+
+	Point& operator-=(Point const &p) {
+		this->x += p.x;
+		this->y += p.y;
+		return *this;
+	}
+
+	Point& operator*=(double d) {
+		this->x *= d;
+		this->y *= d;
+		return *this;
+	}
+
+	Point& operator/=(double d) {
+		this->x /= d;
+		this->y /= d;
+		return *this;
+	}
+};
+
+//в отличие от операторов + - * и /, модифицирующие операторы можно описать только в классе, но не глобальной функцией
+
+void arithmetic_test() {
+	Point p(1, 1);
+	Point q(-1, -1);
+
+	(((p *= 2) += q) /= 2).print();
+	p.print();
+}
+
+
 int main() {
 	if (false) velocity_test();
 	if (false) velocityB_test();
 	if (false) velocityB_globalfunction_test();
+	if (false) arithmetic_test();
 
 	return 0;
 }
