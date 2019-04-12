@@ -42,10 +42,58 @@ void velocity_test() {
 	std::cout << "Total velocity components: " << std::endl;
 	std::cout << "Direct call: "; v1.summation(v2).print();
 	std::cout << "Operator call: "; (v1 + v2).print();
+	std::cout << "Explicit operator call: "; v1.operator+(v2).print();
+}
+
+//таким способом можно перегружать все арифметические операторы: + - * = /
+//добавим операторы умножени€ и делени€ скорости на число
+class VelocityB {
+	double x, y;
+
+public:
+	VelocityB(double x, double y) {
+		VelocityB::x = x;
+		VelocityB::y = y;
+	}
+
+	VelocityB() : VelocityB(0., 0.) {
+	}
+
+	void print() {
+		std::cout << "(" << x << "," << y << ")" << std::endl;
+	}
+	
+	//набор перегруженных арифметических операторов
+	VelocityB operator+(VelocityB const &oth) {
+		return VelocityB(this->x + oth.x, this->y + oth.y);
+	}
+
+	VelocityB operator*(double d) {
+		return VelocityB(d*this->x, d*this->y);
+	}
+
+	VelocityB operator/(double d) {
+		return VelocityB(this->x / d, this->y / d);
+	}
+};
+
+void velocityB_test() {
+	VelocityB v1(10, 10);
+	VelocityB v2(10, 10);
+
+	auto v3 = v1 / 10;
+	auto v4 = v2 * 10;
+	v3.print(); v4.print();
+
+	//однако в обратную сторону уножение работать не будет
+	//auto v5 = 10 * v1; //ошибка компил€ции!
+	//это св€зано с тем, что компил€тор не может выполнить вызов
+	//10.operator+(v1), т.к. 10 - число int, а int не содержит методов...
 }
 
 int main() {
 	if (false) velocity_test();
+	if (false) velocityB_test();
 
 	return 0;
 }
