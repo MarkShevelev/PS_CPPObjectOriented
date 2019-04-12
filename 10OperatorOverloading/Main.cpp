@@ -91,9 +91,21 @@ void velocityB_test() {
 	//10.operator+(v1), т.к. 10 - число int, а int не содержит методов...
 }
 
+//чтобы разрешить проблему с перестановкой числа и скорости в предыдущем примере,
+//воспользуемся возможностью определять перегруженные операторы в виде глобальных функций
+VelocityB operator*(double lha, VelocityB &v) {
+	return v * lha;
+}
+
+void velocityB_globalfunction_test() {
+	VelocityB v1(10, 10);
+	(21 * v1).print(); //т.к. точка имеет более высокий приоритет, то круглые скобки необходимы
+}
+
 int main() {
 	if (false) velocity_test();
 	if (false) velocityB_test();
+	if (false) velocityB_globalfunction_test();
 
 	return 0;
 }
