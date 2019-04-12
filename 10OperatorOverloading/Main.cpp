@@ -167,12 +167,74 @@ void mutating_arithmetic_test() {
 	p.print();
 }
 
+//операторы, которые мы видели выше, называются бинарные, т.к. для выполнения операции необходимо два аргумента
+//существуют также и унарные операции, т.е. для их выполнения достаточно одного аргумента:
+//-a - префиксный минус
+//!a - отрицание
+//~a - инверсия
+//*a - разыменование
+//&a - взятие адреса
+//все эти операторы можно перегрузить
+//рассмотрим перегрузку унарного минуса
+class PointB{
+	double x, y;
+public:
+	PointB(double x, double y) {
+		PointB::x = x;
+		PointB::y = y;
+	}
+
+	PointB() : PointB(0., 0.) {
+	}
+
+	void print() {
+		std::cout << "[" << x << "," << y << "]" << std::endl;
+	}
+
+	PointB& operator+=(PointB const &p) {
+		this->x += p.x;
+		this->y += p.y;
+		return *this; //this - указатель на текущий объект, разыменование - сам объект
+	}
+
+	PointB& operator-=(PointB const &p) {
+		this->x += p.x;
+		this->y += p.y;
+		return *this;
+	}
+
+	PointB& operator*=(double d) {
+		this->x *= d;
+		this->y *= d;
+		return *this;
+	}
+
+	PointB& operator/=(double d) {
+		this->x /= d;
+		this->y /= d;
+		return *this;
+	}
+
+	//унарному минусу нет необходимости передавать аргументы, т.к. достаточно данных объекта, на котором происходит вызов
+
+	PointB operator-() {
+		return PointB(-x, -y);
+	}
+};
+
+void unary_minus_test() {
+	PointB p(1, 1);
+	PointB q(-p);
+	p.print();
+	q.print();
+}
 
 int main() {
 	if (false) velocity_test();
 	if (false) velocityB_test();
 	if (false) velocityB_globalfunction_test();
 	if (false) mutating_arithmetic_test();
+	if (false) unary_minus_test();
 
 	return 0;
 }
