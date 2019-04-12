@@ -159,7 +159,7 @@ public:
 
 //в отличие от операторов + - * и /, модифицирующие операторы можно описать только в классе, но не глобальной функцией
 
-void arithmetic_test() {
+void mutating_arithmetic_test() {
 	Point p(1, 1);
 	Point q(-1, -1);
 
@@ -172,7 +172,7 @@ int main() {
 	if (false) velocity_test();
 	if (false) velocityB_test();
 	if (false) velocityB_globalfunction_test();
-	if (false) arithmetic_test();
+	if (false) mutating_arithmetic_test();
 
 	return 0;
 }
