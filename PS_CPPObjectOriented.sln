@@ -23,6 +23,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09AssignmentOperator", "09A
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10OperatorOverloading", "10OperatorOverloading\10OperatorOverloading.vcxproj", "{4043CDC0-05FF-45D7-9554-3936EE7CD489}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11ConstructorTypeConversion", "11ConstructorTypeConversion\11ConstructorTypeConversion.vcxproj", "{FCC0C195-FF97-4D32-977D-CB40326549CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -111,6 +113,14 @@ Global
 		{4043CDC0-05FF-45D7-9554-3936EE7CD489}.Release|x64.Build.0 = Release|x64
 		{4043CDC0-05FF-45D7-9554-3936EE7CD489}.Release|x86.ActiveCfg = Release|Win32
 		{4043CDC0-05FF-45D7-9554-3936EE7CD489}.Release|x86.Build.0 = Release|Win32
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Debug|x64.ActiveCfg = Debug|x64
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Debug|x64.Build.0 = Debug|x64
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Debug|x86.ActiveCfg = Debug|Win32
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Debug|x86.Build.0 = Debug|Win32
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Release|x64.ActiveCfg = Release|x64
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Release|x64.Build.0 = Release|x64
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Release|x86.ActiveCfg = Release|Win32
+		{FCC0C195-FF97-4D32-977D-CB40326549CB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
