@@ -109,15 +109,15 @@ public:
 	//операции сложения могут быть просто реализованы с использованием вектора
 	PolygonalLine& operator+=(PolygonalLine const &src) {
 		points.reserve(points.size() + src.points.size()); //резервируем память
-		for (size_t size = points.size(), end = src.points.size(), pos = 0; pos != end; ++pos)
-			points[size + pos] = src.points[pos];
+		for (size_t pos = 0; pos != src.points.size(); ++pos)
+			points.push_back(src.points[pos]); //добавляем данные из источника в вектор своих точек
 
 		return *this;
 	}
 	//оператор + может быть легко реализован, если есть += и конструктор копирования
 	PolygonalLine operator+(PolygonalLine const &src) const {
-		PolygonalLine tmp(*this); //копируем свои данные
-		tmp += src;
+		PolygonalLine tmp(*this); //копируем свои данные во временный объект
+		tmp += src; //прибавляем источник к временном объекту оператором +=
 		return tmp;
 	}
 
@@ -125,11 +125,37 @@ private:
 	std::vector<Point> points;
 };
 
+void polygonalline_test() {
+	PolygonalLine pl1({ {0.,0.}, {1.,0}, {0.,1.} }); //вектор можно инициализировать списком значений, т.к. наш основной конструктор допускает неявное преобразование,то мы можем инициализировать PolynomialLine списком точек
+	//Point, в свою очередь, допускает неявное преобразование из пары значений
+
+	PolygonalLine pl2({ {0.,1}, {1.,1.}, {0.,0.} });
+
+	std::cout << pl1.full_distance() << " + " << pl1.full_distance() << " = " << (pl1 + pl2).full_distance() << std::endl;
+}
+
+//вектор может хранить внутри себя любые типы, главное, чтобы они были копируемые или перемещаемые (существовал конструктор перемещения и оператор перемещающего присваивания)
+//например можно создать вектор векторов, что будет эквивалентно массиву массивов - двумерному массиву
+void vector2d_test() {
+	std::vector<std::vector<char>> vec2d = {
+		{'a','b','c'}
+		, {'A','B','C'}
+		, {'1','2','3'}
+	}; //мы создали три вектора и разместили их в векторе, получив таблицу из трёх рядов по три элемента
+
+	for (auto &row : vec2d) { //обходим ряды
+		for (auto ch : row) //обходим элементы внутри ряда
+			std::cout << " " << ch << " |";
+		std::cout << std::endl;
+	}
+}
 
 int main() {
 	if (false) vector_test();
 	if (false) vector_expand_test();
 	if (false) vector_string();
+	if (false) polygonalline_test();
+	if (true) vector2d_test();
 
 	return 0;
 }
