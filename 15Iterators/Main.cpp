@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <vector>
+#include <string>
 
 
 //Мы знаем, что с использованием стандартных алгоритмов можно быстро решать задачи простых статистик в наборе данных, представленных массивом
@@ -113,11 +114,80 @@ void counter_my_for_each_test() {
 	my_for_each(Counter(-10), Counter(0), print<int>);
 }
 
+//итераторы, которые используются в стандартной библиотеке должны дополнительно указать ряд своих свойств
+
+#include <iterator>
+class IterCounter {
+	int const start;
+	int current;
+
+public:
+	typedef int       value_type;
+	typedef int       difference_type;
+	typedef int*      pointer;
+	typedef int&      reference;
+
+	typedef std::forward_iterator_tag  iterator_category;
+
+	IterCounter(int start) : start(start), current(start) { }
+
+	IterCounter& operator++() {
+		++current;
+		return *this;
+	}
+
+	IterCounter& operator++(int v) {
+		IterCounter tmp(*this);
+		++*this;
+		return tmp;
+	}
+
+	int& operator*() {
+		return current;
+	}
+
+	int operator*() const {
+		return current;
+	}
+
+	bool operator==(IterCounter const &oth) {
+		return oth.current == current;
+	}
+
+	bool operator!=(IterCounter const &oth) {
+		return !(oth.current == current);
+	}
+};
+
+void itercounter_test() {
+	std::for_each(Counter(-10), Counter(0), print<int>);
+}
+
+//в некоторых случаях от итератора требуется дополнительно перегрузить оператор ->
+//например, если мы работаем в векторе со структурами
+
+struct Person {
+	std::string name, familyname;
+	bool operator==(Person const &p) {
+		return name == p.name && familyname == p.familyname;
+	}
+};
+
+void vector_iterator_test() {
+	std::vector<Person> persons({ {"Boris","Bolkan"}, {"Dean","Corson"}, {"Liana","Telfer"}, {"Viktor","Fargas"} });
+	std::vector<Person>::iterator res = std::find(persons.begin(), persons.end(), Person{ "Liana","Telfer" });
+	//алгоритм find возвращает итератор на нужный нам элемент
+	//выведем на экран данные
+	std::cout << (*res).name << " " << (*res).familyname << std::endl; //это допустимо, но мы бы хотели использовать привычный механизм ->
+	std::cout << res->name << " " << res->familyname << std::endl; //обратим внимание, что -> применяется к типу std::vector<Person>::iterator, который вовсе не обязан быть указателем
+}
 
 int main() {
 	if (false) my_for_each_test();
 	if (false) asterisk_operator_test();
 	if (false) counter_my_for_each_test();
+	if (false) itercounter_test();
+	if (false) vector_iterator_test();
 
 	return 0;
 }
