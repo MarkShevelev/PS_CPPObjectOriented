@@ -182,12 +182,44 @@ void vector_iterator_test() {
 	std::cout << res->name << " " << res->familyname << std::endl; //обратим внимание, что -> применяется к типу std::vector<Person>::iterator, который вовсе не обязан быть указателем
 }
 
+//оператор -> устроен таким образом, что при его перегрузке необходимо вернуть либо объект, к которому вновь можно применить оператор ->, либо указатель
+
+//использование итераторов с алгоритмом удаления
+#include <cstdlib>
+class RandInRange {
+	int const min, max;
+public:
+	RandInRange(int min, int max): min(min), max(max) { }
+	int operator()() const { return rand() % (max - min + 1) + min; }
+};
+
+bool positive(int x) {
+	return x > 0;
+}
+
+void delete_from_vector() {
+	//чтобы удалить из вектора нужно воспользоваться его методом erase
+	//удалить можно либо один элемент по итератору, либо диапазон элементов
+	std::vector<int> random_numbers(20); //вектор для заполнения случайными числами
+	srand(1024);
+	std::generate(random_numbers.begin(), random_numbers.end(), RandInRange(-50, 50));
+	std::for_each(random_numbers.begin(), random_numbers.end(), print<int>); std::cout << " - original" << std::endl;
+	//алгоритм remove_if пересталвяет элементы таким образом, что те, которые не удовлетворяют условию, остаются в начале массива, остальное пространство заполняется как придётся...
+	//фукция возвращает итератор на первый элемент, который удовлетворяет условию, т.е. должен быть удалён
+	auto it = std::remove_if(random_numbers.begin(), random_numbers.end(), positive);
+	std::for_each(random_numbers.begin(), random_numbers.end(), print<int>); std::cout << " - after remove" << std::endl;
+	std::for_each(random_numbers.begin(),it,print<int>); std::cout << " - only before it" << std::endl;
+	random_numbers.erase(it, random_numbers.end());
+	std::for_each(random_numbers.begin(), random_numbers.end(), print<int>); std::cout << " - after erase" << std::endl;
+}
+
 int main() {
 	if (false) my_for_each_test();
 	if (false) asterisk_operator_test();
 	if (false) counter_my_for_each_test();
 	if (false) itercounter_test();
 	if (false) vector_iterator_test();
+	if (false) delete_from_vector();
 
 	return 0;
 }
