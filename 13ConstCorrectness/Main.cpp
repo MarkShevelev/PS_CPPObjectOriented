@@ -12,8 +12,8 @@ public:
 
 	Date next() {
 		int day_next = (day + 1)%31;
-		int month_next = (month + 1 + (day + 1) / 31) % 12;
-		int year_next = year + 1 + (month + 1 + (day + 1) / 31) / 12;
+		int month_next = (month + (day + 1) / 31) % 12;
+		int year_next = year + (month + 1 + (day + 1) / 31) / 12;
 		return { year,month,day };
 	}
 
@@ -39,8 +39,8 @@ public:
 
 	ConstCorrectDate next() const {
 		int day_next = (day + 1) % 31;
-		int month_next = (month + 1 + (day + 1) / 31) % 12;
-		int year_next = year + 1 + (month + 1 + (day + 1) / 31) / 12;
+		int month_next = (month + (day + 1) / 31) % 12;
+		int year_next = year + (month + 1 + (day + 1) / 31) / 12;
 		return { year,month,day };
 	}
 
