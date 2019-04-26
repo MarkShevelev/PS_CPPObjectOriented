@@ -155,7 +155,7 @@ int main() {
 	if (false) vector_expand_test();
 	if (false) vector_string();
 	if (false) polygonalline_test();
-	if (true) vector2d_test();
+	if (false) vector2d_test();
 
 	return 0;
 }
