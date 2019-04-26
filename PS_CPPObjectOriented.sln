@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12ConversionOperators", "12
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13ConstCorrectness", "13ConstCorrectness\13ConstCorrectness.vcxproj", "{E8C595E0-9095-4F31-B6CD-0CA876CB3A38}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14Vector", "14Vector\14Vector.vcxproj", "{DC54022F-C381-4C72-BD4D-BB8D469F5569}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -141,6 +143,14 @@ Global
 		{E8C595E0-9095-4F31-B6CD-0CA876CB3A38}.Release|x64.Build.0 = Release|x64
 		{E8C595E0-9095-4F31-B6CD-0CA876CB3A38}.Release|x86.ActiveCfg = Release|Win32
 		{E8C595E0-9095-4F31-B6CD-0CA876CB3A38}.Release|x86.Build.0 = Release|Win32
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Debug|x64.ActiveCfg = Debug|x64
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Debug|x64.Build.0 = Debug|x64
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Debug|x86.ActiveCfg = Debug|Win32
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Debug|x86.Build.0 = Debug|Win32
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Release|x64.ActiveCfg = Release|x64
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Release|x64.Build.0 = Release|x64
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Release|x86.ActiveCfg = Release|Win32
+		{DC54022F-C381-4C72-BD4D-BB8D469F5569}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
