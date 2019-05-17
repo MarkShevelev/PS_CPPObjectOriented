@@ -20,11 +20,10 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{99527F56-0CD7-4483-B7CD-230E8636A216}</ProjectGuid>
+    <ProjectGuid>{A1092281-C27D-488E-B5DA-513AC773C98E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>FriendFunctions</RootNamespace>
+    <RootNamespace>My18OverlaodIo</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-    <ProjectName>17FriendFunctions</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

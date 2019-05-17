@@ -35,7 +35,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "15Iterators", "15Iterators\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "16TextFiles", "16TextFiles\16TextFiles.vcxproj", "{FA660EA1-03BC-4386-9596-1B45C24366D5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FriendFunctions", "FriendFunctions\FriendFunctions.vcxproj", "{99527F56-0CD7-4483-B7CD-230E8636A216}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "17FriendFunctions", "FriendFunctions\FriendFunctions.vcxproj", "{99527F56-0CD7-4483-B7CD-230E8636A216}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "18OverlaodIo", "18OverlaodIo\18OverlaodIo.vcxproj", "{A1092281-C27D-488E-B5DA-513AC773C98E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +183,14 @@ Global
 		{99527F56-0CD7-4483-B7CD-230E8636A216}.Release|x64.Build.0 = Release|x64
 		{99527F56-0CD7-4483-B7CD-230E8636A216}.Release|x86.ActiveCfg = Release|Win32
 		{99527F56-0CD7-4483-B7CD-230E8636A216}.Release|x86.Build.0 = Release|Win32
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Debug|x64.ActiveCfg = Debug|x64
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Debug|x64.Build.0 = Debug|x64
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Debug|x86.ActiveCfg = Debug|Win32
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Debug|x86.Build.0 = Debug|Win32
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Release|x64.ActiveCfg = Release|x64
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Release|x64.Build.0 = Release|x64
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Release|x86.ActiveCfg = Release|Win32
+		{A1092281-C27D-488E-B5DA-513AC773C98E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
