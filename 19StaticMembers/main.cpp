@@ -60,7 +60,55 @@ void construct_counter_test() {
 	}
 }
 
+//как и обычные данные, статические данные могут быть private
+//например, это может быть необходимо, чтобы контролировать разделяемый ресурс
+class CountResource {
+public:
+	CountResource() : local_reference(make_resource()) { ++resource_counter; }
+	CountResource(CountResource const &oth) : local_reference(oth.local_reference) { ++resource_counter; }
+	~CountResource() {
+		--resource_counter; if (0 == resource_counter) { delete resource; resource = nullptr; }
+	}
+
+	int GetResource() const { return local_reference; }
+	int& GetResource() { return local_reference; }
+
+private:
+	int &local_reference;
+
+	static int *resource;
+	static int& make_resource() { if (nullptr == resource) resource = new (std::nothrow) int(5); return *resource; }
+
+public: //намеренно сделаем public, чтобы провести диагностику
+	static size_t resource_counter;
+};
+
+int *CountResource::resource = nullptr;
+size_t CountResource::resource_counter = 0;
+
+void shared_resource_test() {
+	std::cout << "No objects: " << CountResource::resource_counter << std::endl;
+	{
+		CountResource resA;
+		std::cout << "After one ojbect created: " << CountResource::resource_counter << std::endl;
+	}
+	std::cout << "After the ojbect has been destroyed: " << CountResource::resource_counter << std::endl;
+
+	{
+		CountResource resA, resB, resC;
+		std::cout << "Check resources: " << resA.GetResource() << " " << resB.GetResource() << " " << resC.GetResource() << std::endl;
+		std::cout << "Tree objects created: " << CountResource::resource_counter << std::endl;
+		{
+			CountResource resD;
+			std::cout << "Another one object: " << resD.GetResource() << " count = " << CountResource::resource_counter << std::endl;
+		}
+		std::cout << "After one object has been destroyed: " << CountResource::resource_counter << std::endl;
+	}
+	std::cout << "All objects destroyed: " << CountResource::resource_counter << std::endl;
+}
+
 int main() {
 	if (false) test_static_intersect();
 	if (false) construct_counter_test();
+	if (false) shared_resource_test();
 }
