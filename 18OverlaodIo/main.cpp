@@ -65,9 +65,55 @@ void input_operator_test() {
 	std::cout << "Segment a: " << a << std::endl << "Segment b: " << b << std::endl;
 }
 
+//Мы знаем, что в классах принято прятать внутренние данные, например в классе Segment
+class Segment {
+public:
+	Segment(): begin(0), end(0) { }
+	Segment(int begin, int end) : begin(begin), end(end) { }
+
+	bool contains(int point) const { return point >= begin && point <= end; }
+	int length() { return begin >= end ? 0 : (end - begin); }
+
+private:
+	int begin, end;
+};
+
+//если мы хотим вывести на экран или считать с консоли данные объекта типа Segment, то нам понадобится способ обратиться к внутренним данным
+//разместить оператор внутри класса (создать метод) возможно, но в этом случае мы потеряем привычную семантику 
+class IOSegment {
+public:
+	IOSegment() : begin(0), end(0) { }
+	IOSegment(int begin, int end) : begin(begin), end(end) { }
+
+	bool contains(int point) const { return point >= begin && point <= end; }
+	int length() { return begin >= end ? 0 : (end - begin); }
+
+	//мы можем объявить оператор дружественным
+	friend std::ostream& operator<<(std::ostream &os, IOSegment const &s);
+	friend std::istream& operator>>(std::istream &is, IOSegment &s);
+
+private:
+	int begin, end;
+};
+
+std::ostream& operator<<(std::ostream &os, IOSegment const &s) {
+	return os << "(" << s.begin << "," << s.end << ")";
+}
+
+std::istream& operator>>(std::istream &is, IOSegment &s) {
+	return is >> s.begin >> s.end;
+}
+
+void friend_operators_test() {
+	IOSegment a, b;
+	std::cin >> a >> b;
+	std::cout << "Segment a: " << a << std::endl << "Segment b: " << b << std::endl;
+}
+
 int main() {
 	if (false) simple_segment_test();
 	if (false) print_simple_segment_test();
 	if (false) output_operator_test();
 	if (false) input_operator_test();
+	if (false) friend_operators_test();
 }
