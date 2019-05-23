@@ -42,6 +42,19 @@ void my_stack_test() {
 	std::cout << std::endl;
 }
 
+//В STL существую специальная "обёртка", которая позволяет "превратить" vector в stack
+#include <stack>
+void stl_stack_test() {
+	std::stack<int, std::vector<int>> stack; //шаблон имеет два параметра: тип хранимых данных и класс, который будет контейнером для хранения
+	stack.push(3); stack.push(5); stack.push(-1); stack.push(7);
+	while (!stack.empty()) {
+		//stack.top() предоставляет ссылку на последний элемент стека, что позволяет обратиться к нему, не вынимая, это, в свою очередь, позволяет получить данные с вершины константного стека
+		std::cout << stack.top() << ' ';
+		stack.pop();
+	}
+}
+
 int main() {
 	if (false) my_stack_test();
+	if (false) stl_stack_test();
 }
