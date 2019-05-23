@@ -95,9 +95,21 @@ void my_queue_test() {
 	std::cout << std::endl;
 }
 
+//для работы с очередью в STL существует обёртка над контейнером deque - queue
+#include <queue>
+void stl_queue_test() {
+	std::queue<std::string, std::deque<std::string>> hello_queue;
+	hello_queue.push("Hello"); hello_queue.push(" "); hello_queue.push("Queue"); hello_queue.push("!");
+	while (!hello_queue.empty()) {
+		std::cout << hello_queue.front();
+		hello_queue.pop();
+	}
+	std::cout << std::endl;
+}
 
 int main() {
 	if (false) my_stack_test();
 	if (false) stl_stack_test();
 	if (false) my_queue_test();
+	if (false) stl_queue_test();
 }
