@@ -107,9 +107,48 @@ void stl_queue_test() {
 	std::cout << std::endl;
 }
 
+//“реть€ важна€ безадресна€ структура - это очередь с приоритетом
+//ќсновное отличие очереди с приоритетом, от обычной очереди в том, что элементы при выборе из очереди следуют не просто принципу FIFO, но следуют приоритету
+//–ассмотрим случай: есть люди и мы хотим обслужить их по возрасту так, что самые старшие проход€т первыми
+//ќни попадают в очередь в произвольном пор€дке {Anna,27}, {Bert,34}, {Uncle Bob, 57}, {Duke,40}, {Cory,27}
+//Ёлементы будут вз€ты из очерели в следующем пор€дке: {Uncle Bob, 57} -> {Duke,40} -> {Bert,34} -> {Anna,27} -> {Cory,27}
+//ѕор€док элементов определ€етс€ возрастом, елси возраст одинаков, то действует принцип FIFO
+
+//Ѕыстра€ реализаци€ такой очереди, когда на каждом шаге необходимо вынимать элемент, квалифицированный как максимальный по приоритету неочевидна, эффективный способ - использование бинарной кучи
+//еЄ не нужно реализовывать самому, в STL есть обЄртка, котора€ сама выполн€ет все необходимые операции: priority_queue
+#include <queue>
+
+struct User {
+	std::string name;
+	int age;
+};
+std::ostream& operator<<(std::ostream &os, User const &u) {
+	return os << "{ \"" << u.name << "\" , " << u.age << " }";
+}
+
+//priority_queue полагаетс€ на сравнение оператором <
+bool operator<(User const &lha, User const &rha) {
+	return lha.age < rha.age;
+}
+
+void stl_priority_queue_test() {
+	std::priority_queue<User> users;
+	users.push({ "Anna",27});
+	users.push({ "Bert",34 });
+	users.push({ "Uncle Bob", 57 });
+	users.push({ "Duke" ,40 });
+	users.push({ "Cory",27 });
+
+	while (!users.empty()) {
+		std::cout << users.top() << std::endl;
+		users.pop();
+	}
+}
+
 int main() {
 	if (false) my_stack_test();
 	if (false) stl_stack_test();
 	if (false) my_queue_test();
 	if (false) stl_queue_test();
+	if (false) stl_priority_queue_test();
 }
