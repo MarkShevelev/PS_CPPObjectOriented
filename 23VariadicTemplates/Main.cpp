@@ -104,12 +104,34 @@ void any_struct_test() {
 	print_any(a.head, a.tail.head, a.tail.tail.head);
 }
 
+//в STL существует предопределённая возможность для создания таких структур
+#include <tuple>
+void tuple_test() {
+	auto data = make_tuple(42, std::string("Hello World!"), 3.1415); //make_tuple позволяет сделать tuple с автоматическим определением типов
+	//чтобы не писать много раз .tail в стандартной библиотеке предусмотрена структура-помощник (helper)
+	std::cout << std::get<0>(data) << " " << std::get<1>(data) << " " << std::get<2>(data) << std::endl;
+}
+
+//tuple может быть удобным средством, чтобы быстро сравнивать наборы переменных
+void tuple_tie_test() {
+	std::string name1 = "Anna"; int age1 = 25;
+	std::string name2; int age2;
+	std::cin >> name2 >> age2;
+
+	auto first = std::tie(name1, age1), second = std::tie(name2, age2);
+	std::cout << (first == second ? "Equal" : "Different") << std::endl;
+	if (first != second)
+		std::cout << (first < second ? "First before Second" : "Second before First") << std::endl;
+}
+
+
 
 int main() {
 	if (false) tpl_factorial_test();
 	if (false) array_unpack_test();
 	if (false) print_any_test();
 	if (false) any_struct_test();
+	if (false) tuple_tie_test();
 
 	return 0;
 }
