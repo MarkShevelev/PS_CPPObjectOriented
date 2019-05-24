@@ -124,8 +124,6 @@ void tuple_tie_test() {
 		std::cout << (first < second ? "First before Second" : "Second before First") << std::endl;
 }
 
-
-
 int main() {
 	if (false) tpl_factorial_test();
 	if (false) array_unpack_test();
