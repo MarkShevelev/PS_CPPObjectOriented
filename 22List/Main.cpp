@@ -63,7 +63,7 @@ void my_list_test() {
 	MyList<std::string> list;
 
 	list.PushFront(" ");
-	list.InsertAfter(list.Front(), "World ");
+	list.InsertAfter(list.Front(), "World");
 	list.InsertAfter(list.Front()->next, "!");
 	list.PushFront("Hello");
 
@@ -75,6 +75,21 @@ void my_list_test() {
 	std::cout << std::endl;
 }
 
+//в стандартной библиотеке языка C++ есть реализация структуры данных, написанной нами выше - forward_list
+#include <forward_list>
+void stl_forward_list_test() {
+	std::forward_list<std::string> words;
+	words.push_front(" ");
+	words.insert_after(words.begin(), "World");
+	words.insert_after(next(words.begin()), "!");
+	words.push_front("Hello");
+
+	for (auto &element : words)
+		std::cout << element;
+	std::cout << std::endl;
+}
+
 int main() {
 	if (false) my_list_test();
+	if (false) stl_forward_list_test();
 }
