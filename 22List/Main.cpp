@@ -55,6 +55,9 @@ public:
 	~MyList() {
 		while (!empty()) PopFront();
 	}
+	//явно удаляем опасные операции
+	MyList<T>& operator=(MyList<T> const &oth) = delete;
+	MyList(MyList<T> const &src) = delete;
 
 private:
 	ListNode<T> *head = nullptr;
