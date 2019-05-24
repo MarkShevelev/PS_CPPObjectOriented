@@ -20,6 +20,8 @@ struct ListNode {
 template <typename T>
 class MyList {
 public:
+	MyList() { }
+
 	void PushFront(T const &t) {
 		ListNode<T> *new_node = new (std::nothrow) ListNode<T>{ t,head };
 		head = new_node;
