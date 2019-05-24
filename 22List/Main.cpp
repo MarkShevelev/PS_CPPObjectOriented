@@ -148,4 +148,6 @@ int main() {
 	if (false) my_list_test();
 	if (false) stl_forward_list_test();
 	if (false) josephus_permutation_test();
+
+	return 0;
 }
