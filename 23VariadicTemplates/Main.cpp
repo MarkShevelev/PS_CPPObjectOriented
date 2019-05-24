@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 //Для начала рассмотрим рекурсивные шаблоны
 //Например, представим себе, что мы хотим написать функцию, которая высчитывает факториал числа
@@ -83,11 +84,32 @@ void print_any_test() {
 	print_any("Hello ", 42, " World", '!', 3.1415);
 }
 
+//Аналогичным образом можно создавать структуры данных с произвольным числом и типом параметров
+template <typename... Args>
+struct AnyStruct { };
+
+template <typename T, typename... Rest>
+struct AnyStruct<T,Rest...> {
+	T head;
+	AnyStruct<Rest...> tail;
+};
+
+//теперь мы можем объявлять структуры с произовльным числом внутренних данных "на лету"
+void any_struct_test() {
+	AnyStruct<int, std::string, double> a;
+	a.head = 5;
+	a.tail.head = "Hello World!";
+	a.tail.tail.head = 3.1415;
+
+	print_any(a.head, a.tail.head, a.tail.tail.head);
+}
+
 
 int main() {
 	if (false) tpl_factorial_test();
 	if (false) array_unpack_test();
 	if (false) print_any_test();
+	if (false) any_struct_test();
 
 	return 0;
 }
