@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <random>
 
 //vector и deque дают возможность быстрой вставки в конце и в начало, однако вставка в середину для обоих контейнеров приводит к перемещению памяти и копированию
 //хотя для deque такое перемещение занимает меньше времени
@@ -77,6 +78,7 @@ void my_list_test() {
 
 //в стандартной библиотеке языка C++ есть реализация структуры данных, написанной нами выше - forward_list
 #include <forward_list>
+#include <iterator> //std::next
 void stl_forward_list_test() {
 	std::forward_list<std::string> words;
 	words.push_front(" ");
@@ -89,7 +91,56 @@ void stl_forward_list_test() {
 	std::cout << std::endl;
 }
 
+//forward_list обладает серьёзными ограничениями, например, мы не можем вставить элемент "перед" заданным, т.к. предыдущий элемент неизвестен
+//движение итератора возможно только вперёд ++it, потому нельзя быстро обратиться к последнему элементу
+
+//эту проблему можно решить, пожертвовав немного памятью, чтобы у каждого элемента была ссылка как на последующий, так и на предыдущий
+//такой список называется двунаправленным или двусвязным (doubly linked list)
+//в STL двусвязный список реализован контейнером list
+
+#include <list>
+// Вспомогательная функция, позволяющая "зациклить" список
+template <typename Container, typename ForwardIt>
+ForwardIt LoopIterator(Container& container, ForwardIt pos) {
+	return pos == container.end() ? container.begin() : pos;
+}
+
+template <typename T>
+void josephus_permutation(std::vector<T> &elements, unsigned step_size) {
+	std::list<T> pool;
+	for (auto it = elements.begin(), end = elements.end(); it != end; ++it) {
+		pool.push_back(std::move(*it));
+	}
+	auto first = elements.begin();
+	auto cur_pos = pool.begin();
+	while (!pool.empty()) {
+		*(first++) = std::move(*cur_pos);
+		if (pool.size() == 1) {
+			break;
+		}
+		const auto next_pos = LoopIterator(pool, std::next(cur_pos));
+		pool.erase(cur_pos); //если бы это был vector, то эта операция была бы о-о-очень долгой
+		cur_pos = next_pos;
+		for (unsigned step_index = 1; step_index < step_size; ++step_index) {
+			cur_pos = LoopIterator(pool, std::next(cur_pos));
+		}
+	}
+}
+
+void josephus_permutation_test() {
+	std::vector<std::string> players = { "Anna","Bert","Corey","Uncle Bob","Duke" };
+	int step;
+	std::cin >> step;
+	josephus_permutation(players, step);
+
+	for (auto &player : players)
+		std::cout << player << ' ';
+	std::cout << std::endl;
+}
+
+
 int main() {
 	if (false) my_list_test();
 	if (false) stl_forward_list_test();
+	if (false) josephus_permutation_test();
 }
