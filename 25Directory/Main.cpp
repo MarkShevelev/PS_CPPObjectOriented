@@ -8,7 +8,6 @@ void io_test() {
 	struct _finddata_t c_file; //структура, содержащая данные о файле
 	intptr_t hFile;
 
-	// Find first .c file in current directory
 	if ((hFile = _findfirst("*", &c_file)) == -1L) //ищет первое вхождение и возвращает handler
 		printf("No files with the mask given in current directory!\n");
 	else
