@@ -129,7 +129,9 @@ std::ostream& operator<<(std::ostream &os, week_t w) {
 //счёт дней недели можно было начинать по-разному: с нуля или с единицы - enum избавляет от этой проблемы
 //при дальнейшем использовании enum week_t нам нет необходимости знать какими именно числами представлены дни недели
 
-//описанные выше примеры обладают существенным недостатком
+//описанные выше примеры обладают существенными недостатками
+//enum gender2_t {MALE,FEMALE,UNKNOWN};//определение нового enum с такими же идентификаторами может привести к неполадкам в компиляции старого кода
+
 void drawback_test() {
 	week_t day = week_t(MALE+1);//из-за неявного преобразования к типу int мы можем незаметно использовать идентификаторы одного типа для определения идентификаторов другого типа
 	if (FEMALE == day) //сравниваются целочисленные представления
@@ -137,11 +139,11 @@ void drawback_test() {
 }
 
 //В С++ существует специальный тип enum class, который избавлен от этого недостатка
-enum class lexer_t {DIGIT,LETTER,PUNCT};
-enum class token_t {NUMBER,IDENTIFIER,OPERATION};
+enum class lexer_t { DIGIT, LETTER, PUNCT };
+enum class token_t { DIGIT, LETTER, PUNCT };
 
 void enum_class_test() {
-	token_t tok = token_t::NUMBER; //для каждого идентификатора необходимо указать из какого он типа
+	token_t tok = token_t::DIGIT; //для каждого идентификатора необходимо указать из какого он типа
 	//lexer_t lex = lexer_t(token_t::NUMBER + 1); //нет неявного преобразования из token_t в int!
 	lexer_t lex = lexer_t(2);
 	//std::cout << tok << " " << lex << std::endl; //нет неявного преобразования из lexer_t или token_t в int!
