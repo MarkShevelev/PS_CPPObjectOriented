@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
 //¬ложенный класс (inner class или nested class) - это класс, определЄнный внутри другого класса
 //¬ложенный класс имеет доступ к внутренним данным окружающего класса, обратное неверно
@@ -44,8 +45,59 @@ void inner_transfer_class_test() {
 	std::cout << "Acc1: " << acc1.check() << '\n' << "Acc2: " << acc2.check() << std::endl;
 }
 
+//ќдно из ходовых применений вложенных классов - это прокси
+//–ассмотрим следующую задачу: есть список контактов, необходимо обеспечить доступ к этим контактам вне зависимости от увеличени€ количества контаков в векторе
+
+//!!!Ќеверное решение!!!
+class Contacts {
+public:
+	Contacts& add(std::string const &contact) { contacts.push_back(contact); return *this; }
+	std::string get_contact(size_t id) const { return contacts[id]; } //здесь всЄ хорошо, изменение копии не страшно
+
+	std::string& get_contact(size_t id) { return contacts[id]; } //здесь всЄ плохо! ¬ызов push_back погубит ссылку
+
+private:
+	std::vector<std::string> contacts;
+};
+
+class ProxContacts {
+private:
+	class proxy_contact {
+	public:
+		proxy_contact(ProxContacts &contacts, size_t id): contacts(contacts), id(id) { }
+		proxy_contact& operator=(std::string const &str) { contacts.contacts[id] = str; return *this; }
+		operator std::string() { return contacts.contacts[id]; } //не€вное преобразование дл€ прозрачной работы
+
+	private:
+		ProxContacts &contacts;
+		size_t id;
+	};
+
+public:
+	Contacts& add(std::string const &contact) { contacts.push_back(contact); }
+	std::string get_contact(size_t id) const { return contacts[id]; }
+
+	proxy_contact get_contact(size_t id) { return proxy_contact(*this, id); } //мы возвращаем объект, который запоминает индекс контакта и через индекс предоставл€ет доступ
+
+private:
+	std::vector<std::string> contacts;
+};
+
+void proxy_contact_test() {
+	Contacts book;
+	book.add("First contact");
+	book.add("Second contact");
+	auto first_contact = book.get_contact(0);
+	book.add("Third contact");
+	auto third_contact = book.get_contact(2);
+
+	third_contact = first_contact; //всЄ выгл€дит так, словоно это и есть строка
+	std::cout << first_contact << " : " << third_contact << std::endl; //всЄ благодар€ не€вному преобразованию
+}
+
 int main() {
 	if (false) inner_transfer_class_test();
+	if (false) proxy_contact_test();
 
 	return 0;
 }
