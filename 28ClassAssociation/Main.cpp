@@ -105,8 +105,19 @@ public:
 	Department(std::string const &name): name(name) { }
 
 	void salary_month(int amount) const {
-		for (auto emplolyee_ptr : employees)
-			emplolyee_ptr->salary_inflow(amount);
+		for (auto employee_ptr : employees)
+			if (nullptr != employee_ptr)
+				employee_ptr->salary_inflow(amount);
+	}
+
+	void hire(PaidEmployee* ptr) {
+		employees.push_back(ptr);
+	}
+
+	void fire(PaidEmployee* ptr) {
+		auto it = std::find(employees.begin(), employees.end(), ptr);
+		if (it != employees.end())
+			employees.erase(it);
 	}
 
 private:
