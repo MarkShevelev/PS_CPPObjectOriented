@@ -99,7 +99,7 @@ private:
 	Account account;
 };
 
-//В какое отношение входит класс Department c классом Employee и с классом Account?
+//В какое отношение входит класс Department c классом PaidEmployee и с классом Account?
 class Department {
 public:
 	Department(std::string const &name): name(name) { }
