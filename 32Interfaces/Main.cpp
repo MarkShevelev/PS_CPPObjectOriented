@@ -48,8 +48,56 @@ void arithmetic() {
 	};
 }
 
+//ѕон€тно, что можно было бы заменить многократные if на поиск в словаре
+//ќднако не €сно, что именно должно быть элементом словар€
+//Ќа каждое слово мы производим какой-то код
+//¬ решении этой задачи нам поможет полиморфизм!
+
+//создадим базовый класс
+struct CommandProcess {
+	virtual bool process() const { return true; } //метод процесс возвращает нам proceed, флаг продолжени€
+	//метод виртуальный, потому что мы собираемс€ дать ему другие реализации в выденных классах
+};
+
+struct Exit : CommandProcess {
+	bool process() const { return false; } //команда Exit измен€ет метод так, что он всегда возвращает false, т.е. прерывает работу мгновенно
+};
+
+struct Add : CommandProcess {
+	bool process() const {
+		int a, b;
+		std::cin >> a >> b;
+		std::cout << (a + b) << std::endl;
+		return true;
+	}
+};
+
+//реорганизуем основную функцию
+#include <map>
+void arithmetic_polymorphic() {
+	std::map <std::string, CommandProcess*> commands;
+	Exit exit;
+	Add add;
+	commands["exit"] = &exit;
+	commands["add"] = &add;
+
+	bool proceed = true;
+	while (proceed) {
+		std::string command;
+		std::cin >> command;
+
+		auto process_it = commands.find(command); //ищем объект с кодом, который необходимо выполнить
+		//если не находим, то выполн€ем код дл€ ошибочной команды
+		if (commands.end() == process_it) { std::cout << "Unknown command" << std::endl; continue; }
+
+		//в остальных случа€х делегируем работу найденной команде
+		proceed = process_it->second->process(); 
+	}
+}
+
 int main() {
 	if (false) arithmetic();
+	if (false) arithmetic_polymorphic();
 
 	return 0;
 }
