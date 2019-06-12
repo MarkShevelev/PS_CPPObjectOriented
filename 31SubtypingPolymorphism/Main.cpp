@@ -21,15 +21,15 @@ public:
 
 //Мы можем легко передавать объекты типа PrintableName в функции, которые ожидают Name
 void print_name(Name const &name) {
-	std::cout << name.first_name << std::endl;
+	std::cout << name.first_name;
 }
 
 void print_name_test() {
 	Name ray("Ray","John","Strangeway");
 	PrintableName jose("Jose", "Lopes", "De Vega");
 
-	print_name(ray);
-	print_name(jose);
+	print_name(ray); std::cout << std::endl;
+	print_name(jose); std::cout << std::endl;
 }
 
 //почему в функции print_name не возникает ошибки?
@@ -44,10 +44,37 @@ void print_name_test() {
 //Что мы и видели выше
 //Такой подход к написанию кода позволил бы нам существенно снизить связанность различных частей программы
 
+//Если у некоторого типа есть один и более подтипов, то говорят, что супертип - это полиморфный тип
+//Например, тип Name - это полиморфный тип
+//Ситуацию, когда реальный тип объектов может быть разным, а мы опираемся только на супертип, называют "полиморфизмом подтипов"
+//Полиморфим позволяет расширять программу, добавляя новые возможности, но при этом активно используя старые
 
+//Класс с новыми особенностями
+class Student : public Name {
+public:
+	Student(std::string const &first, std::string const &middle, std::string const &family, std::string const &department): Name(first,middle,family), department(department) { }
+
+	std::string const & get_department() const { return department; }
+
+private:
+	std::string department;
+};
+
+//функция, которая опирается на новое поведение Student
+void print_student(Student const &s) {
+	print_name(s); //используем возможности, определённые ранее
+	std::cout << " from department " << s.get_department();
+}
+
+void print_student_test() {
+	Student wulf("Willam", "Allan", "Wulf", "Computer science");
+	print_student(wulf); std::cout << std::endl;
+	print_name(wulf); std::cout << std::endl; //по-прежнему можем воспользоваться алгоритмом печати имени
+}
 
 int main() {
 	if (false) print_name_test();
+	if (false) print_student_test();
 
 	return 0;
 }
