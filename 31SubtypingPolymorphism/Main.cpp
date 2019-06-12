@@ -109,12 +109,53 @@ void all_check_test() {
 //Полиморфизма, изменения поведения, не получилось
 //Так как данные читаются из память по определённым адресам и в этой памяти могут содержаться различные данные для различных объектов, то мы видим полиморфизм, но по определённым адресам в сегменте кода всегда содержится один и тот же код
 
+//Эту проблему можно было бы обойти с помощью указателей на функции!
+//Если бы вместо того, чтобы писать новую функцию, мы бы переписали данные указателя на функцию, по которому нужно произвести вызов, то мы бы получили поведение, аналогичное поведению с данными!
+
+bool good(int x) { return true; }
+bool positive(int x) { return x > 0; }
+typedef bool(*predicate_t)(int);
+
+struct FPPredicate {
+	FPPredicate() { to_call = good; }
+
+	bool check(int x) const { return to_call(x); } //внутри метода check, который будет статически связан, мы вызываем функциию проверки, читая данные из поля адреса
+
+protected:
+	predicate_t to_call;
+};
+
+//функция, которая опирается только на возможности FPPredicate
+bool all_check(int *arr, size_t size, FPPredicate const &p) {
+	for (size_t pos = 0; pos != size; ++pos)
+		if (!p.check(arr[pos])) return false;
+	return true;
+}
+
+struct FPPositive: FPPredicate {
+	FPPositive() { to_call = positive; } //мы изменим поведение check, задав новый адрес исполняемого сегмента кода
+};
+
+void fp_all_check_test() {
+	int arr[] = { 1,3,-1,-2,2,-3 };
+	FPPredicate p;
+	FPPositive pp;
+
+	std::cout << std::boolalpha << all_check(arr, 6, p) << std::endl;
+	std::cout << std::boolalpha << all_check(arr, 6, pp) << std::endl;
+}
+//Теперь поведение стало ожидаемым!
+
+
+
+
 
 
 int main() {
 	if (false) print_name_test();
 	if (false) print_student_test();
 	if (false) all_check_test();
+	if (true) fp_all_check_test();
 
 	return 0;
 }
