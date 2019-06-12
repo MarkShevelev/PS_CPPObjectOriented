@@ -175,16 +175,69 @@ void virtual_method_all_check_test() {
 //Обратите внимание, что достаточно указать ключеввое слово virtual только в базовом классе
 //Как только мы отметим какой-либо метод ключевым словом virtual, то его вызов будет происходить посредством указателя на функцию, который хранится в специальном месте внутри объекта - в "таблице виртуальных функций"
 
+//Виртуальный метод может быть не один, класс может содержать как виртуальные, так и обычные методы
+class Figure {
+public:
+	Figure(std::string const &name): name(name) { }
+	std::string const & what_am_i() const { return name; } //обычный метод, статическое связывание
+	virtual double periphery() const { return 0.; } //виртуальный метод, он будет вызван посредством указателя
+	virtual double area() const { return 0.; }
 
+private:
+	std::string const name;
+};
 
+class Circle : public Figure {
+public:
+	Circle(double r): Figure("Circle"), r(r), circle_string("I'am a Circle") { }
+	
+	std::string const & what_am_i() const { return circle_string; } //этот метод будет вызван статическим связыванием
+	
+	double periphery() const { return 3.14*r*2.; } //эти методы будут вызваны через указатели
+	double area() const { return 3.14*r*r; }
 
+private:
+	double r;
+	std::string const circle_string;
+};
+
+class Rectangle : public Figure {
+public:
+	Rectangle(double w, double h) : Figure("Rectangle"), w(w), h(h), rectangle_string("I'am a Rectangle") { }
+
+	std::string const & what_am_i() const { return rectangle_string; } //этот метод будет вызван статическим связыванием
+
+	double periphery() const { return 2*(w+h); } //эти методы будут вызваны через указатели
+	double area() const { return w*h; }
+
+private:
+	double w, h;
+	std::string const rectangle_string;
+};
+
+void figure_print(Figure const &fig) {
+	std::cout << fig.what_am_i() << " with periphery = " << fig.periphery() << " and with area = " << fig.area() << std::endl;
+}
+
+void figure_print_test() {
+	Figure f("Empty");
+	Circle cir(1.);
+	Rectangle rect(1., 2.);
+
+	figure_print(f); figure_print(cir); figure_print(rect);
+	std::cout << "Cir method: " << cir.what_am_i() << std::endl;
+	std::cout << "Rect method: " << rect.what_am_i() << std::endl;
+}
+//Виртуальные методы сработали по принципу динамического связывания, они были вызвана по адресу, который установлен в дочернем классе
+//Невиртуальные методы сработали по принциппу статического связывания, т.е. при компиляции в функции figure_print был подставлен адрес сегмента кода, связанного с классом Figure
 
 int main() {
 	if (false) print_name_test();
 	if (false) print_student_test();
 	if (false) all_check_test();
 	if (false) fp_all_check_test();
-	if (true) virtual_method_all_check_test();
+	if (false) virtual_method_all_check_test();
+	if (false) figure_print_test();
 
 	return 0;
 }
