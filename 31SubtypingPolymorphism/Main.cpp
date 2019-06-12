@@ -263,6 +263,29 @@ struct Cube : ArithmeticOperation {
 	//double operation(double x) const override { return x * x*x; }//здесь будет ошибка компил€ции, т.к. така€ перегрузка не определена в базовом классе
 };
 
+//¬ некоторых случа€х мы не хотим, чтобы классы имели наследников, это может быть сделано дл€ того, чтобы предотвратить ошибочное использование классов
+//Ќапример в классе нет виртуальных функций, наследование всЄ равно не даст полиморфизма (обратим внимание, что приватное наследование ѕќЋЌќ—“№ё может быть заменено на композицию)
+//»ли мы создали дочерний класс и полагаем, что дальнейшее его расширение может быть опасно
+//ƒл€ этого есть ключевое слово final - оно не даЄт возможности наследоватьс€ от такого класса
+
+struct FinalStruct final {
+	virtual std::string what() const { return "I'm final class"; }
+};
+
+/*struct FinalStructDerived: FinalStruct { //ошибка компил€ции нельз€ наследовать от класса с квалификатором final
+	std::string what() { return "I'm Derived"; }
+};*/
+
+struct FinalMethodStruct {
+	virtual std::string what() const final { return "I'm final method"; }
+	virtual std::string hello() const { return "I'm normal virtual method"; }
+};
+
+struct FinalMethodStructDerived : FinalMethodStruct {
+	//std::string what() const { return "I'm final method"; }//ошибка компил€ции, невозможно переопределить, т.к. метод объ€влен final
+	std::string hello() const { return "I'm normal virtual method"; }
+};
+
 int main() {
 	if (false) print_name_test();
 	if (false) print_student_test();
