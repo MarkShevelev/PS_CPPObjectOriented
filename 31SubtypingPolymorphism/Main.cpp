@@ -146,6 +146,34 @@ void fp_all_check_test() {
 }
 //Теперь поведение стало ожидаемым!
 
+//Для того, чтобы не делать подобных ходов самому, в C++ предусмотрен синтаксис, который позволяет организовать подобный вызов метода через указатель на функцию прозрачным образом
+//Отметив метод в базовом классе ключевым словом virtual можно получить ожидаемое поведение в выведенных классах
+
+struct VMPredicate {
+	virtual bool check(int x) const { return true; } //в базовом классе отмечаем метод check как virtual
+};
+
+struct VMPositive : VMPredicate {
+	bool check(int x) const { return x > 0; } //в выведенном классе ничего дополнительно делать не нужно, достаточно написать другую реализацию для метода, отмеченного как virtual в базовом классе
+};
+
+bool all_check(int *arr, size_t size, VMPredicate const &p) {
+	for (size_t pos = 0; pos != size; ++pos)
+		if (!p.check(arr[pos])) return false;
+	return true;
+}
+
+void virtual_method_all_check_test() {
+	int arr[] = { 1,3,-1,-2,2,-3 };
+	VMPredicate p;
+	VMPositive pp;
+
+	std::cout << std::boolalpha << all_check(arr, 6, p) << std::endl;
+	std::cout << std::boolalpha << all_check(arr, 6, pp) << std::endl;
+}
+//Мы получаем ожидаемое поведение без дополнительных сложностей
+//Обратите внимание, что достаточно указать ключеввое слово virtual только в базовом классе
+//Как только мы отметим какой-либо метод ключевым словом virtual, то его вызов будет происходить посредством указателя на функцию, который хранится в специальном месте внутри объекта - в "таблице виртуальных функций"
 
 
 
@@ -155,7 +183,8 @@ int main() {
 	if (false) print_name_test();
 	if (false) print_student_test();
 	if (false) all_check_test();
-	if (true) fp_all_check_test();
+	if (false) fp_all_check_test();
+	if (true) virtual_method_all_check_test();
 
 	return 0;
 }
