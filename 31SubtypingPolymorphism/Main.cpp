@@ -231,6 +231,38 @@ void figure_print_test() {
 //Виртуальные методы сработали по принципу динамического связывания, они были вызвана по адресу, который установлен в дочернем классе
 //Невиртуальные методы сработали по принциппу статического связывания, т.е. при компиляции в функции figure_print был подставлен адрес сегмента кода, связанного с классом Figure
 
+//Каким образом определяет компилятор какой именно метод связывается динамически, а какой статически? По названию?
+//Не только
+//В С++ существует понятие перегрузки функций, следовательно два метода с разными входящими параметрами будут считаться различными методами и мы не увидим ожидаемого поведения
+
+struct ArithmeticOperation {
+	virtual int operation(int x) const { return x; }
+};
+
+struct Sqr : ArithmeticOperation {
+	double operation(double x) { return x*x; }
+	int operation(int x) { return x * x; }
+};
+
+void operation_test() {
+	Sqr sqr_operation;
+	std::cout << "Sqr: " << sqr_operation.operation(2) << " " << sqr_operation.operation(2.2) << std::endl;
+
+	ArithmeticOperation &op = sqr_operation;
+	std::cout << "Arithm: " << op.operation(2) << " " << op.operation(2.2) << std::endl;
+}
+
+//Для обоих функций переопределение не сработало и полиморфного поведения не случилось
+//Причина в том, что обе предложенные функции не являются переопределёнными
+//Хотя имена у функций совпадают с методом базового класса, равно как и количество аргументов, но типы различаются, равно как и квалификаторы
+//Для того, чтобы копилятор применил переопределение функции, она должна быть в точности такой же: и по имени, и по входящим параметрам - по количеству и типам
+
+//Чтобы избежать подобных неприятностей следует использовать ключевое слово override
+struct Cube : ArithmeticOperation {
+	int operation(int x) const override { return x * x*x; } //всё в порядке, такая функция есть в базовом классе
+	//double operation(double x) const override { return x * x*x; }//здесь будет ошибка компиляции, т.к. такая перегрузка не определена в базовом классе
+};
+
 int main() {
 	if (false) print_name_test();
 	if (false) print_student_test();
@@ -238,6 +270,7 @@ int main() {
 	if (false) fp_all_check_test();
 	if (false) virtual_method_all_check_test();
 	if (false) figure_print_test();
+	if (false) operation_test();
 
 	return 0;
 }
