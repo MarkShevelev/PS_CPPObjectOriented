@@ -71,6 +71,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "33VirtualDestructor", "33Vi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "34MultipleInheritance", "34MultipleInheritance\34MultipleInheritance.vcxproj", "{F922F975-F7C5-4416-8697-BEEF624FA4A0}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "35RombInheritance", "35RombInheritance\35RombInheritance.vcxproj", "{5137D7FD-5948-4364-BF8D-457D118127B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -351,6 +353,14 @@ Global
 		{F922F975-F7C5-4416-8697-BEEF624FA4A0}.Release|x64.Build.0 = Release|x64
 		{F922F975-F7C5-4416-8697-BEEF624FA4A0}.Release|x86.ActiveCfg = Release|Win32
 		{F922F975-F7C5-4416-8697-BEEF624FA4A0}.Release|x86.Build.0 = Release|Win32
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Debug|x64.ActiveCfg = Debug|x64
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Debug|x64.Build.0 = Debug|x64
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Debug|x86.ActiveCfg = Debug|Win32
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Debug|x86.Build.0 = Debug|Win32
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Release|x64.ActiveCfg = Release|x64
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Release|x64.Build.0 = Release|x64
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Release|x86.ActiveCfg = Release|Win32
+		{5137D7FD-5948-4364-BF8D-457D118127B9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
