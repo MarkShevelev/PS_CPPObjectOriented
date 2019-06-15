@@ -137,7 +137,7 @@ void exceptional_stack_test() {
 		est.push(-1); est.push(-1);
 	}
 	case 3: {
-		std::cout << "Preliminary pop: " << est.pop() << std::endl;
+		std::cout << est.pop() << std::endl;
 	}
 	case 1: {
 		for (int cnt = 0; cnt != 5; ++cnt)
@@ -150,10 +150,45 @@ void exceptional_stack_test() {
 	}
 }
 
+//Для того, чтобы анализировать полученные ошибки, а не просто обрушать программу, предусмотрена специальная конструкция try{}catch(){}
+void try_catch_exception_stack_test() {
+	std::cout
+		<< "1) Normal stack work\n"
+		<< "2) Stack overflow\n"
+		<< "3) Pop from an empry stack\n"
+		<< std::endl;
+
+	int i;
+	std::cin >> i;
+	ExceptionStack est(5);
+
+	try {
+		switch (i) {
+		case 2: {
+			est.push(-1); est.push(-1);
+		}
+		case 3: {
+			std::cout << est.pop() << std::endl;
+		}
+		case 1: {
+			for (int cnt = 0; cnt != 5; ++cnt)
+				est.push(cnt);
+			for (int cnt = 0; cnt != 5; ++cnt)
+				std::cout << est.pop() << ' ';
+			std::cout << std::endl;
+			std::cout << "Good" << std::endl;
+		} break;
+		}
+	}
+	catch (std::string str) {
+		std::cout << "Error: " << str << std::endl;
+	}
+}
 
 int main() {
 	if (false) exception_divv_test();
 	if (false) exceptional_stack_test();
+	if (false) try_catch_exception_stack_test();
 
 	return 0;
 }
