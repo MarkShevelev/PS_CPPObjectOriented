@@ -185,10 +185,49 @@ void try_catch_exception_stack_test() {
 	}
 }
 
+//Конструкция try{}catch(){} допускает не один, а несколько блоков catch(){} для различных типов исключений
+//Представим себе функцию, которая может генерировать (выбрасывать) исключения различного типа: целый числа (int) и строки (string)
+int different_exceptions(int x) {
+	switch (x) {
+	case 1:
+		throw std::string("String Exception");
+	case 2:
+		throw 1;
+	case 3:
+		throw 3.14;
+	}
+	return x;
+}
+
+void different_exceptions_test() {
+	std::cout
+		<< "1) Throw string\n"
+		<< "2) Throw integer\n"
+		<< "3) Throw double\n"
+		<< "Ohter - Normal workflow"
+		<< std::endl;
+
+	int i;
+	std::cin >> i;
+	try {
+		std::cout << "Normal workflow: " << different_exceptions(i) << std::endl;
+	}
+	catch (int i) {
+		std::cout << "Integer exception has been caught!" << std::endl;
+	}
+	catch (std::string str) {
+		std::cout << "String exception has been caught!" << std::endl;
+	}
+}
+
+//Как видно из теста, те исключения, которые были обозначены в блоках catch были пойманы, сработал код соответствующих блоков
+//Те исключения, которые не обозначены в блоках catch, сломали программу
+
 int main() {
 	if (false) exception_divv_test();
 	if (false) exceptional_stack_test();
 	if (false) try_catch_exception_stack_test();
+	if (false) different_exceptions_test();
 
 	return 0;
 }
