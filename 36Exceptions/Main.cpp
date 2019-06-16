@@ -192,7 +192,7 @@ int different_exceptions(int x) {
 	case 1:
 		throw std::string("String Exception");
 	case 2:
-		throw 1;
+		throw -1;
 	case 3:
 		throw 3.14;
 	}
@@ -213,21 +213,104 @@ void different_exceptions_test() {
 		std::cout << "Normal workflow: " << different_exceptions(i) << std::endl;
 	}
 	catch (int i) {
-		std::cout << "Integer exception has been caught!" << std::endl;
+		std::cout << "Integer exception has been caught! " << i << std::endl;
 	}
 	catch (std::string str) {
-		std::cout << "String exception has been caught!" << std::endl;
+		std::cout << "String exception has been caught!" << str << std::endl;
 	}
 }
 
 //Как видно из теста, те исключения, которые были обозначены в блоках catch были пойманы, сработал код соответствующих блоков
 //Те исключения, которые не обозначены в блоках catch, сломали программу
 
+//Среди всех catch блоков есть один специальный, который ловит все возможные исключения
+void any_exception_catcher() {
+	std::cout
+		<< "1) Throw string\n"
+		<< "2) Throw integer\n"
+		<< "3) Throw double\n"
+		<< "Ohter - Normal workflow"
+		<< std::endl;
+
+	int i;
+	std::cin >> i;
+	try {
+		std::cout << "Normal workflow: " << different_exceptions(i) << std::endl;
+	}
+	catch (...) {
+		std::cout << "Some exception has been caught. I'dont know exact type of one." << std::endl;
+	}
+}
+
+//если размещать несколько блоков catch, то может возникнуть вопрос: зависит ли выбор блока catch от порядка и как подбираются блоки, если типы похожи
+
+void catch_order_testA() {
+	std::cout
+		<< "1) Throw string\n"
+		<< "2) Throw integer\n"
+		<< "3) Throw double\n"
+		<< "Ohter - Normal workflow"
+		<< std::endl;
+
+	int i;
+	std::cin >> i;
+	try {
+		std::cout << "Normal workflow: " << different_exceptions(i) << std::endl;
+	}
+	catch (double d) {
+		std::cout << "A double has been caught: " << d << std::endl;
+	}
+	catch (int i) {
+		std::cout << "An int has been cauth: " << i << std::endl;
+	}
+	catch (...) {
+		std::cout << "Some exception has been caught." << std::endl;
+	}
+}
+
+//Если универсальный блок catch(...) переставить с другими блоками, то возникнет ошибка компиляции
+//Дело в том, что блоки catch проверяются СВЕРХУ ВНИЗ и первое попавшееся совпадение срабатывает, тогда, разместив универсальный блок сверху, мы сделали все остальные блоки заведомо недостижимыми
+
+//при работе с системой подтипов можно попасть в неприятности
+#include <stdexcept>
+int different_exceptionsB(int x) {
+	switch (x) {
+	case 1:
+		throw std::runtime_error("Runtime error exception");
+	case 2:
+		throw std::range_error("Range error exception"); //range_error наследует runtime_error
+	}
+	return x;
+}
+
+void different_exceptionsB_test() {
+	std::cout
+		<< "1) To throw runtime_error\n"
+		<< "2) To throw range_error\n"
+		<< "Other value - normal workflow\n"
+		<< std::endl;
+
+	int i;
+	std::cin >> i;
+	try {
+		std::cout << "Normal workflow: " << different_exceptionsB(i) << std::endl;
+	}
+	catch (std::runtime_error &re) {
+		std::cout << "Runtime error catch block: " << re.what() << std::endl;
+	}
+	catch (std::range_error &re) {
+		std::cout << "Range error catch block: " << re.what() << std::endl;
+	}
+} //блок для родительского типа находится выше блока для дочернего типа, таким образом, блок для дочернего типа никогда не будет выполнен
+
 int main() {
 	if (false) exception_divv_test();
 	if (false) exceptional_stack_test();
 	if (false) try_catch_exception_stack_test();
 	if (false) different_exceptions_test();
+	if (false) any_exception_catcher();
+	if (false) catch_order_testA();
+	if (false) different_exceptionsB_test();
 
 	return 0;
 }
