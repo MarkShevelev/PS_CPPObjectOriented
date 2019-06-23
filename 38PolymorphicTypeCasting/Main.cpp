@@ -34,21 +34,22 @@ struct Figure { //Интерфейс
 	virtual ~Figure() { }
 };
 
-class Circle final : public Figure {
+class Circle  : public Figure {
 public:
 	Circle(double r): r(r) { }
 	double area() const override { return 3.1415*r*r; }
-	void cir() const { std::cout << "Cir" << std::endl; } //уникальный метод класса Circle
+	double radius() { return r;	} //уникальный метод класса Circle
 
 private:
 	double r;
 };
 
-class Rectangle final : public Figure {
+class Rectangle  : public Figure {
 public:
 	Rectangle(double w, double h): w(w), h(h) { }
 	double area() const override { return w * h; }
-	void rec() const { std::cout << "Rec" << std::endl; } //уникальный метод класса Rectangle
+	double width() const { return w; } //уникальный метод класса Rectangle
+	double heigth() const { return h; } //уникальный метод класса Rectangle
 
 private:
 	double w, h;
@@ -57,26 +58,44 @@ private:
 void downcasting_test() {
 	{
 		Figure &fig_ref = *(new Circle(1.)); //создаём объект типа Circle, но сохраняем ссылку на него с базовым типом
-		std::cout << fig_ref.area() << std::endl;
-		//fig_ref.cir(); //ошибка компиляции! Нельзя вызвать метод .cir, т.к. Figure о нём ничего не знает
+		std::cout << "Area = " << fig_ref.area() << std::endl;
+		//fig_ref.radius(); //ошибка компиляции! Нельзя вызвать метод .cir, т.к. Figure о нём ничего не знает
 		//Circle &cir_ref = fig_ref; //такое преобразование не может  быть неявным
 		
 		Circle &cir_ref = static_cast<Circle&>(fig_ref); //но мы можем выполнить его явно
-		cir_ref.cir();
+		std::cout << "Radius = " << cir_ref.radius();
 
 		delete &fig_ref;
 	}
 
 	{
 		Figure *fig_ptr = new Rectangle(1., 2.);
-		std::cout << fig_ptr->area() << std::endl;
+		std::cout << "Area = " << fig_ptr->area() << std::endl;
 		//Rectangle *rec_ptr = fig_ptr; //невозможно преобразовать неявно
 		Rectangle *rec_ptr = static_cast<Rectangle*>(fig_ptr); //явно можно выполнить преобразование и с указателем
-		rec_ptr->rec();
+		std::cout << "Width/Heigth = " << rec_ptr->width() << "/" << rec_ptr->heigth() << std::endl;
 
 		delete fig_ptr;
 	}
 }
+
+
+//Преобразование типов возможно и при множественном наследовании
+class Position {
+public:
+	Position(int x, int y) :x(x), y(y) { }
+
+	int getX() const { return x; }
+	int getY() const { return y; }
+
+private:
+	int const x, y;
+};
+
+class PositionedRectangle : public Position, public Rectangle {
+public:
+	PositionedRectangle(int x, int y, int w, int h) : Position(x, y), Rectangle(w, h) { }
+};
 
 int main() {
 	if (false) upcasting_test();
