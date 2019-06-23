@@ -138,10 +138,39 @@ void multiple_inheritance_cast_test() {
 	//std::cout << cir_ptr->radius() << std::endl; //неопределённое поведение!!!
 }
 
+//static_cast может уберечь нас от неверного преобразования, если оно в принципе невозможно, как в случае попытки перейти от Shape к Circle при множественном наследовании
+//однако static_cast опирается только на знания статической информации о типах и не может предсказать неверные действия программиста
+void wrong_downcast_test() {
+	Figure *fig = nullptr;
+	std::cout 
+		<< "1)Circle\n"
+		<< "2)Recatangle\n" 
+		<< std::endl;
+	int x;
+	std::cin >> x;
+	switch (x) {
+	case 1:
+		fig = new Circle(1.);
+		break;
+	case 2:
+		fig = new Rectangle(2., 2.);
+		break;
+	default:
+		std::cout << "Unknown figure!" << std::endl;
+		return;
+	}
+
+	Circle *cir_ptr = static_cast<Circle*>(fig); //нет ошибки! всегда успешно, т.к. Circle и Figure - классы одной иерархии, производится downcast
+	//Однако реальный тип объекта, на который указывает fig может быть разным
+	//Тип зависит от выбора пользователя и не может быть предсказан
+	std::cout << cir_ptr->radius() << std::endl;
+}
+
 int main() {
 	if (false) upcasting_test();
 	if (false) downcasting_test();
 	if (false) multiple_inheritance_cast_test();
+	if (true) wrong_downcast_test();
 
 	return 0;
 }
