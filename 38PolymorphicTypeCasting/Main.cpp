@@ -4,6 +4,7 @@
 //≈сли мы преобразуем тип от наследного к родительскому, то оно может быть произведено автоматически, не€вно, такое преобразование называют upcasting (преобразование вверх по иерархии)
 struct Base {
 	virtual void say() const { std::cout << "Base" << std::endl; }
+	virtual ~Base()  { }
 };
 
 struct Derived : Base {
@@ -24,8 +25,62 @@ void upcasting_test() {
 	b_ptr->say(); //сработает Derived::say() - полиморфизм подтипов
 }
 
+//≈сли есть необходимость обратного преобразовани€ - от базового класса к выведенному - то оно не может быть не€вным, т.к. на этапе компил€ции разрешить такое преобразование невозможно
+//¬ этом случае мы можем сделать преобразование €вно
+//ѕреобразование от базового класса к выведенному называетс€ downcasting (преобразование вниз по иерархии)
+
+struct Figure { //»нтерфейс
+	virtual double area() const = 0;
+	virtual ~Figure() { }
+};
+
+class Circle final : public Figure {
+public:
+	Circle(double r): r(r) { }
+	double area() const override { return 3.1415*r*r; }
+	void cir() const { std::cout << "Cir" << std::endl; } //уникальный метод класса Circle
+
+private:
+	double r;
+};
+
+class Rectangle final : public Figure {
+public:
+	Rectangle(double w, double h): w(w), h(h) { }
+	double area() const override { return w * h; }
+	void rec() const { std::cout << "Rec" << std::endl; } //уникальный метод класса Rectangle
+
+private:
+	double w, h;
+};
+
+void downcasting_test() {
+	{
+		Figure &fig_ref = *(new Circle(1.)); //создаЄм объект типа Circle, но сохран€ем ссылку на него с базовым типом
+		std::cout << fig_ref.area() << std::endl;
+		//fig_ref.cir(); //ошибка компил€ции! Ќельз€ вызвать метод .cir, т.к. Figure о нЄм ничего не знает
+		//Circle &cir_ref = fig_ref; //такое преобразование не может  быть не€вным
+		
+		Circle &cir_ref = static_cast<Circle&>(fig_ref); //но мы можем выполнить его €вно
+		cir_ref.cir();
+
+		delete &fig_ref;
+	}
+
+	{
+		Figure *fig_ptr = new Rectangle(1., 2.);
+		std::cout << fig_ptr->area() << std::endl;
+		//Rectangle *rec_ptr = fig_ptr; //невозможно преобразовать не€вно
+		Rectangle *rec_ptr = static_cast<Rectangle*>(fig_ptr); //€вно можно выполнить преобразование и с указателем
+		rec_ptr->rec();
+
+		delete fig_ptr;
+	}
+}
+
 int main() {
 	if (false) upcasting_test();
+	if (false) downcasting_test();
 
 	return 0;
 }
