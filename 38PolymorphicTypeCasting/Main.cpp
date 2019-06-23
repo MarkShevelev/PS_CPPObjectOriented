@@ -122,21 +122,26 @@ std::string in_out(double x, double y, Shape const &shape) {
 void multiple_inheritance_cast_test() {
 	Shape *shapeA = new PositionedCircle(0., 0., 1.);          //неявный upcast
 	Shape *shapeB = new PositionedRectangle(0., 0., 1., 1.);   //неявный upcast
-	std::cout << "The point (0.5,0.5) is \n"
-		<< in_out(0.5, 0.5, *shapeA) << " the shapeA " << '\n'
-		<< in_out(0.5, 0.5, *shapeB) << " the shapeB " << '\n'
+	std::cout << "The point (0.8,0.8) is \n"
+		<< in_out(0.8, 0.8, *shapeA) << " the shapeA " << '\n'
+		<< in_out(0.8, 0.8, *shapeB) << " the shapeB " << '\n'
 		<< std::endl;
 
 	//PositionedCircle *cir_ptr = shapeA; //невозможно неявно сделать преобразование
 	PositionedCircle *poscir_ptr = static_cast<PositionedCircle*>(shapeA); //но можно явно!
 	//Circle *cir_ptr = static_cast<Circle*>(shapeA); //невозможно!
 	//Хотя мы знаем, что наш объект является наследником Circle и может быть к нему приведён, компилятор неразрешает такое преобразование даже явно, т.к. это преобразование не является ни upcast, ни downcast
-	Circle *cit_ptr = (Circle*)(shapeA); //КРАЙНЕ ОПАСНЫЙ КОД!!!
+	
+	Circle *cir_ptr = (Circle*)(shapeA); //КРАЙНЕ ОПАСНЫЙ КОД!!!
+	//в конструкции выше будет применён reinterpret_cast<Circle*>
+	//он всегда допустим, но последствия его использования непредсказуемы!!!
+	//std::cout << cir_ptr->radius() << std::endl; //неопределённое поведение!!!
 }
 
 int main() {
 	if (false) upcasting_test();
 	if (false) downcasting_test();
+	if (false) multiple_inheritance_cast_test();
 
 	return 0;
 }
