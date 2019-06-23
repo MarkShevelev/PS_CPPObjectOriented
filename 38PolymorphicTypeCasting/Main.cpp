@@ -153,24 +153,70 @@ void wrong_downcast_test() {
 		fig = new Circle(1.);
 		break;
 	case 2:
-		fig = new Rectangle(2., 2.);
+		fig = new Rectangle(2., 3.);
 		break;
 	default:
 		std::cout << "Unknown figure!" << std::endl;
 		return;
 	}
 
-	Circle *cir_ptr = static_cast<Circle*>(fig); //нет ошибки! всегда успешно, т.к. Circle и Figure - классы одной иерархии, производится downcast
+	Rectangle *rect_ptr = static_cast<Rectangle*>(fig); //нет ошибки! всегда успешно, т.к. Circle и Figure - классы одной иерархии, производится downcast
 	//Однако реальный тип объекта, на который указывает fig может быть разным
 	//Тип зависит от выбора пользователя и не может быть предсказан
-	std::cout << cir_ptr->radius() << std::endl;
+	std::cout << rect_ptr->heigth() << std::endl; //неопределённое поведение!!!
+}
+
+//Кроме преобразования по "статическому типу", которые производятся с использованием static_cast, C++ поддерживает условное преобразование по динамическому типу - dynamic_cast
+
+//Для того, чтобы dynamic_cast работал так, как ожидается, необходимо специально включить систему  
+//Проект > Свойства > С/C++ > Язык > Включить информацию о типах времени исполнения
+//Если эту опцию не включить, то dynamic_cast сработает как static_cast
+void dynamic_check_downcast_test() {
+	Figure *fig = nullptr;
+	std::cout
+		<< "1)Circle\n"
+		<< "2)Recatangle\n"
+		<< std::endl;
+	int x;
+	std::cin >> x;
+	switch (x) {
+	case 1:
+		fig = new Circle(1.);
+		break;
+	case 2:
+		fig = new Rectangle(2., 3.);
+		break;
+	default:
+		std::cout << "Unknown figure!" << std::endl;
+		return;
+	}
+
+	Rectangle *rect_ptr = dynamic_cast<Rectangle*>(fig);
+	if (nullptr != rect_ptr)
+		std::cout << rect_ptr->heigth() << std::endl;
+	else
+		std::cout << "Can't cast to Rectangle..." << std::endl;
+}
+
+void dynamic_reference_check_downcast_test() {
+	Figure &fig = *(new Circle(1.));
+	try {
+		Rectangle &rec_ref = dynamic_cast<Rectangle&>(fig);
+		std::cout  << rec_ref.heigth() << std::endl;
+	}
+	catch (std::bad_cast &ex) {
+		std::cout << ex.what() << std::endl;
+	}
+	delete &fig;
 }
 
 int main() {
 	if (false) upcasting_test();
 	if (false) downcasting_test();
 	if (false) multiple_inheritance_cast_test();
-	if (true) wrong_downcast_test();
+	if (false) wrong_downcast_test();
+	if (false) dynamic_check_downcast_test();
+	if (false) dynamic_reference_check_downcast_test();
 
 	return 0;
 }
