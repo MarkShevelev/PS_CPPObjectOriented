@@ -38,7 +38,7 @@ class Circle  : public Figure {
 public:
 	Circle(double r): r(r) { }
 	double area() const override { return 3.1415*r*r; }
-	double radius() { return r;	} //уникальный метод класса Circle
+	double radius() const { return r;	} //уникальный метод класса Circle
 
 private:
 	double r;
@@ -81,21 +81,58 @@ void downcasting_test() {
 
 
 //Преобразование типов возможно и при множественном наследовании
+struct Shape {
+	virtual bool contains(double x, double y) const = 0;
+	virtual ~Shape() { }
+};
+
 class Position {
 public:
-	Position(int x, int y) :x(x), y(y) { }
+	Position(double x, double y) :x(x), y(y) { }
 
-	int getX() const { return x; }
-	int getY() const { return y; }
+	double getX() const { return x; }
+	double getY() const { return y; }
 
 private:
-	int const x, y;
+	double const x, y;
 };
 
-class PositionedRectangle : public Position, public Rectangle {
+#include <cmath>
+class PositionedRectangle : public Position, public Rectangle, public Shape {
 public:
-	PositionedRectangle(int x, int y, int w, int h) : Position(x, y), Rectangle(w, h) { }
+	PositionedRectangle(double x, double y, double w, double h) : Position(x, y), Rectangle(w, h) { }
+	bool contains(double x, double y) const override {
+		return (x > Position::getX() && x < (Position::getX()+Rectangle::width()) && y > Position::getY() && y < (Position::getY()+Rectangle::heigth()));
+	}
 };
+
+class PositionedCircle : public Position, public Circle, public Shape {
+public:
+	PositionedCircle(double x, double y, double r) : Position(x, y), Circle(r) { }
+	bool contains(double x, double y) const override {
+		return hypot(x - Position::getX(), y - Position::getY()) < Circle::radius();
+	}
+};
+
+#include <string>
+std::string in_out(double x, double y, Shape const &shape) {
+	return shape.contains(x, y) ? "inside" : "outside";
+}
+
+void multiple_inheritance_cast_test() {
+	Shape *shapeA = new PositionedCircle(0., 0., 1.);          //неявный upcast
+	Shape *shapeB = new PositionedRectangle(0., 0., 1., 1.);   //неявный upcast
+	std::cout << "The point (0.5,0.5) is \n"
+		<< in_out(0.5, 0.5, *shapeA) << " the shapeA " << '\n'
+		<< in_out(0.5, 0.5, *shapeB) << " the shapeB " << '\n'
+		<< std::endl;
+
+	//PositionedCircle *cir_ptr = shapeA; //невозможно неявно сделать преобразование
+	PositionedCircle *poscir_ptr = static_cast<PositionedCircle*>(shapeA); //но можно явно!
+	//Circle *cir_ptr = static_cast<Circle*>(shapeA); //невозможно!
+	//Хотя мы знаем, что наш объект является наследником Circle и может быть к нему приведён, компилятор неразрешает такое преобразование даже явно, т.к. это преобразование не является ни upcast, ни downcast
+	Circle *cit_ptr = (Circle*)(shapeA); //КРАЙНЕ ОПАСНЫЙ КОД!!!
+}
 
 int main() {
 	if (false) upcasting_test();
