@@ -136,11 +136,26 @@ void myautoptr_test() {
 }
 
 
-
+//В стандартной библиотеке C++ есть стандартный шаблон unique_ptr, который позволяет подобно написанному нами MyAutoPtr автоматически уничтожать объекты, при выходе из области видимости или завершении жизни объектов, которые их содержат
+#include <memory>
+void unique_ptr_test() {
+	std::unique_ptr<Rectangle> prtRect(new Rectangle(1., 2.));
+	{
+		std::unique_ptr<Circle> ptrCir(new Circle(1.));
+	}
+	//unique_ptr поддерживают "ковариантность"
+	std::unique_ptr<Figure> figure;
+	{
+		std::unique_ptr<Circle> ptrCir(new Circle(2.));
+		figure = std::move(ptrCir); //присваивание невозможно, но возможно перемещение
+	}
+	std::cout << figure->area() << std::endl;
+}
 
 int main() {
 	if (false) polymorphic_choice_test();
 	if (false) myautoptr_test();
+	if (false) unique_ptr_test();
 
 	return 0;
 }
