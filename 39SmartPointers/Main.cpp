@@ -152,10 +152,86 @@ void unique_ptr_test() {
 	std::cout << figure->area() << std::endl;
 }
 
+//В некоторых ситуациях может возникнуть необходимость один и тот же объект разделять между другими объектами - агрегация
+//Где тогда хранить данные об этих объектах, если они полиморфные, и как их уничтожать
+
+//В случае композиции можно создать вектор уникальных умных указателей
+class CompositeFigureViaComposition final: public Figure {
+public:
+	void add(Figure const * fig) { figures.emplace_back(fig); }
+	double area() const override {
+		double sum = 0;
+		for (auto &ptr : figures)
+			sum += ptr->area();
+		return sum;
+	}
+
+private:
+	std::vector<std::unique_ptr<Figure const>> figures; //все фигуры будут удалены как только закончит жизнь объект
+};
+
+void composite_via_composition_test() {
+	{
+		Circle cir(1.);
+		Rectangle rect(2., 1.);
+		std::cout << "Two figures area: " << (cir.area() + rect.area()) << std::endl;
+	}
+
+	{
+		CompositeFigureViaComposition composite;
+		composite.add(new Circle(1.));
+		composite.add(new Rectangle(2., 1.));
+		std::cout << "Composite area: " << composite.area() << std::endl;
+	}
+}
+
+//Если же мы хотим агрегацию, то ответ не так прост
+//Одно из решений, хранить данные где-то ещё
+class CompositeFigureViaSimplePointerAggregation final : public Figure {
+public:
+	void add(Figure const * fig) { figures.push_back(fig); }
+	double area() const override {
+		double sum = 0.;
+		for (auto ptr : figures)
+			sum += ptr->area();
+		return sum;
+	}
+
+private:
+	std::vector<Figure const*> figures;
+};
+
+void composite_via_simple_pointer_aggeregation_test() {
+	//мы обязательно должны иметь отдельное хранилище для данных
+	std::vector<std::unique_ptr<Figure>> figures;
+	{
+		CompositeFigureViaSimplePointerAggregation compositeA;
+		CompositeFigureViaSimplePointerAggregation compositeB;
+
+		//обязательно добавляем фигуру сначала в хранилище
+		figures.emplace_back(new Circle(1.));
+		figures.emplace_back(new Rectangle(2., 1.));
+
+		//затем разделяем между агрегирующими объектами
+		compositeA.add(figures[0].get());
+		compositeA.add(figures[1].get());
+
+		compositeB.add(figures[1].get());
+		compositeB.add(figures[0].get());
+
+		//figures.erase(figures.begin());//опасная ситуация потери данных, может произойти случайно
+
+		std::cout << compositeA.area() << std::endl;
+		std::cout << compositeB.area() << std::endl;
+	}
+}
+
 int main() {
 	if (false) polymorphic_choice_test();
 	if (false) myautoptr_test();
 	if (false) unique_ptr_test();
+	if (false) composite_via_composition_test();
+	if (false) composite_via_simple_pointer_aggeregation_test();
 
 	return 0;
 }
