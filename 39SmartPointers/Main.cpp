@@ -226,12 +226,26 @@ void composite_via_simple_pointer_aggeregation_test() {
 	}
 }
 
+//В С++ есть специальный инструмент, который позволяет решить эту проблему - shared_ptr
+//это специальный указатель, который подсчитывает количество живых объектов и удаляет память только в том случае, когда все объекты умерли
+
+void shared_ptr_test() {
+	std::shared_ptr<Figure> circle(new Circle(1.));
+	{
+		std::shared_ptr<Figure> shared_circle = circle;
+		std::cout << shared_circle->area() << std::endl;
+	}
+	std::cout << circle->area() << std::endl;
+	//только в конце будет удалён объект
+}
+
 int main() {
 	if (false) polymorphic_choice_test();
 	if (false) myautoptr_test();
 	if (false) unique_ptr_test();
 	if (false) composite_via_composition_test();
 	if (false) composite_via_simple_pointer_aggeregation_test();
+	if (false) shared_ptr_test();
 
 	return 0;
 }
