@@ -272,6 +272,59 @@ void composite_via_shared_pointer_aggeregation_test() {
 	std::cout << "CompositeA: " << compositeA.area() << std::endl;
 }
 
+
+//при использовании shared_ptr возможны ситуации, когда объект никогда не будет удалён
+class DangerousCircle {
+public:
+	DangerousCircle(std::string const &name) : name(name) { }
+	void add(std::shared_ptr<DangerousCircle> next) { this->next = next; }
+	~DangerousCircle() { std::cout << name << " has been destroyed!" << std::endl; }
+
+private:
+	std::string name;
+	std::shared_ptr<DangerousCircle> next;
+};
+
+void dangerous_circle_test() {
+	{//line chain is good
+		auto m = std::make_shared<DangerousCircle>("Majira"), o = std::make_shared<DangerousCircle>("Odin"), b = std::make_shared<DangerousCircle>("Barks");
+		m->add(o); o->add(b);
+	}
+
+	{//circle chain is bad
+		auto m = std::make_shared<DangerousCircle>("Marks"), o = std::make_shared<DangerousCircle>("Opal"), b = std::make_shared<DangerousCircle>("Bigle");
+		m->add(o); o->add(b); b->add(m); //m o b никгда не будут удалены, т.к. счётчик ссылок никогда не достигнет ноля
+	}
+}
+
+//для разрыва подобных циклических ссылок существует специальный умный указатель weak_ptr
+class WeakLink {
+public:
+	WeakLink(std::string const &name): name(name) { }
+	~WeakLink() { std::cout << name << " has been destroyed" << std::endl; }
+	void add(std::weak_ptr<WeakLink> link) { this->link = link; }
+
+private:
+	std::string name;
+	std::weak_ptr<WeakLink> link;
+};
+
+void weak_link_test() {
+	{//line chain
+		auto m = std::make_shared<WeakLink>("Majira"), o = std::make_shared<WeakLink>("Odin"), b = std::make_shared<WeakLink>("Barks");
+		m->add(o); o->add(b);
+	}
+
+	{//circle chain
+		auto m = std::make_shared<WeakLink>("Marks"), o = std::make_shared<WeakLink>("Opal"), b = std::make_shared<WeakLink>("Bigle");
+		m->add(o); o->add(b); b->add(m);
+	}
+}
+
+//weak_ptr может быть легко создан из shared_ptr, такой weak_ptr "знает", если shared_ptr "умер"
+//.expired() возвращает true, если связанный с weak_ptr shared_ptr уже "мёртв"
+//.lock() позволяет получить shared_ptr, что будет гарантировать существование данных, пока вы работаете с ними
+
 int main() {
 	if (false) polymorphic_choice_test();
 	if (false) myautoptr_test();
@@ -280,6 +333,8 @@ int main() {
 	if (false) composite_via_simple_pointer_aggeregation_test();
 	if (false) shared_ptr_test();
 	if (false) composite_via_shared_pointer_aggeregation_test();
+	if (false) dangerous_circle_test();
+	if (false) weak_link_test();
 
 	return 0;
 }
