@@ -239,6 +239,39 @@ void shared_ptr_test() {
 	//только в конце будет удалён объект
 }
 
+//Можно использовать shared_ptr для создания агрегации
+class CompositeFigureViaSharedPointerAggregation final : public Figure {
+public:
+	void add(std::shared_ptr<Figure> fig) { figures.push_back(fig); }
+	double area() const override {
+		double sum = 0.;
+		for (auto fig : figures)
+			sum += fig->area();
+		return sum;
+	}
+
+private:
+	std::vector<std::shared_ptr<Figure>> figures;
+};
+
+void composite_via_shared_pointer_aggeregation_test() {
+	CompositeFigureViaSharedPointerAggregation compositeA;
+	{
+		std::shared_ptr<Figure> circle_ptr(new Circle(1.)), rectangle_ptr(new Rectangle(2.,1.));
+		{
+			CompositeFigureViaSharedPointerAggregation compositeB;
+			compositeB.add(circle_ptr);
+			compositeB.add(rectangle_ptr);
+
+			std::cout << "CompositeB: " << compositeB.area() << std::endl;
+		}
+
+		compositeA.add(circle_ptr);  //если данную часть кода закомментировать, то объекты умрут раньше, чем выводится площадь compositeA
+		compositeA.add(rectangle_ptr);
+	}
+	std::cout << "CompositeA: " << compositeA.area() << std::endl;
+}
+
 int main() {
 	if (false) polymorphic_choice_test();
 	if (false) myautoptr_test();
@@ -246,6 +279,7 @@ int main() {
 	if (false) composite_via_composition_test();
 	if (false) composite_via_simple_pointer_aggeregation_test();
 	if (false) shared_ptr_test();
+	if (false) composite_via_shared_pointer_aggeregation_test();
 
 	return 0;
 }
