@@ -38,15 +38,15 @@ void random_in_range_class_test() {
 	using namespace std;
 
 	int min, max;
-	std::cin >> min >> max;
+	cin >> min >> max;
 	vector<int> numbers(20);
 	generate(numbers.begin(), numbers.end(), RandomInRange(min, max));
 	for_each(numbers.begin(), numbers.end(), print<int>);
-	std::cout << std::endl;
+	cout << endl;
 
 	sort(numbers.begin(), numbers.end());
 	for_each(numbers.begin(), numbers.end(), print<int>);
-	std::cout << std::endl;
+	cout << endl;
 }
 
 //Однако описанный подход по-прежнему неудобен, т.к. приходится описывать класс RandomInRange, который используется только один раз
@@ -59,30 +59,108 @@ void random_in_range_lambda_test() {
 	vector<int> numbers(20);
 	{
 		int min, max;
-		std::cin >> min >> max;
+		cin >> min >> max;
 		default_random_engine engine;
 		uniform_int_distribution<int> distribution(min,max);
 		generate(numbers.begin(), numbers.end(), 
-			[&engine,&distribution]() {	return distribution(engine); } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
+			[&engine,&distribution] {	return distribution(engine); } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
 		);
 	}
 
 
 	for_each(numbers.begin(), numbers.end(), 
-		[](int x) { std::cout << x << ' '; } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
+		[](int x) { cout << x << ' '; } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
 	);
 	std::cout << std::endl;
 
 	sort(numbers.begin(), numbers.end());
 	for_each(numbers.begin(), numbers.end(), 
-		[](int x) { std::cout << x << ' '; } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
+		[](int x) { cout << x << ' '; } //объявление объекта с перегруженным оператором () с помощью лямбда-выражения
 	);
-	std::cout << std::endl;
+	cout << endl;
 }
+
+//лямбда выражения определяются конструкцией, состоящей из трёх пар скобок [](){}
+//[ ] - определяют список локальных переменных, которые помещаются во внутренние данные лямбда выражения
+//( ) - определяют список аргументов, которые при вызове следует передать в круглые скобки
+//{ } - определяет тело оператора ()
+//между скобками могут быть дополнительные квалификации
+//[] () mutable throw() -> int { }
+//mutable позволяет изменить данные в теле, throw() - квалифицирует возможные исключения, -> int - указывает возвращаемый тип
+//квалификаторы, включая возвращаемый тип, не являются обязательными
+
+//Рассмотрим различные варианты "захвата" данных
+
+//захват всех данных копированием и по ссылке
+//задача подсчитать все числа, удовлетворяющие условию
+void capture_by_copy_and_reference() { 
+	using namespace std;
+	vector<int> numbers = { 1,2,3,-2,-3,0,4 };
+	for (auto i : numbers)
+		cout << i << ' ';
+	cout << endl;
+
+	{//ничего не захватываем для подсчёта положительных чисел
+		cout << "count positive is " << count_if(numbers.begin(), numbers.end(), [](int x) { return x > 0; }) << endl;
+	}
+
+	{//подсчёт чисел в промежутке, необходимо захватить пару чисел
+		int min, max;
+		cin >> min >> max;
+		//мы можем не указывать явно, какие данные захватываем, а использовать специальный синтаксис [=]
+		//при этом будут захвачены копированием все упомянутые переменные
+		cout << "count in (" << min << "," << max << ") is " << count_if(numbers.begin(), numbers.end(), [=](int x) { return x > min && x < max; }) << endl;
+	}
+
+	{//при захвате по ссылке, мы можем менять данные, которые находятся вне лямбда выражения
+		int p = 0;
+		//для захвата всех упомянутых переменных используется синтаксис [&]
+		for_each(numbers.begin(), numbers.end(), [&](int x) { cout << ++p << ' '; } );
+		cout << '\n' << p << endl;
+	}
+}
+
+//захват this
+//в лямбда выражение нельзя захватить внутренние данные объекта, но можно захватить указатель на объект (this)
+class CaptureTest final {
+public:
+	CaptureTest(size_t count_numbers, int min , int max) : numbers(count_numbers), min(min), max(max) {
+		int p = 0;
+		//p - локальные данные, их можно захватывать синтаксисом [&p]
+		std::generate(numbers.begin(), numbers.end(), [&p] { return p++; }); //если входящих данных нет, то можно опустить ()
+	}
+
+	void print() const {
+		std::for_each(numbers.begin(), numbers.end(), [](int x) { std::cout << x << ' '; }); //глобальные объекты специально захватывать не нужно
+		std::cout << std::endl;
+	}
+
+	int count_in_range() const {
+		//захватить min и max нельзя, т.к. они не являются локальными переменными
+		//return count_if(numbers.begin(), numbers.end(), [min,max](int x) { return x > min && x < max; });
+		
+		//такой синтаксис работает! захвачен указатель на объект
+		return count_if(numbers.begin(), numbers.end(), [this](int x) { return x > min && x < max; });
+	}
+
+	
+private:
+	std::vector<int> numbers;
+	int const min, max;
+};
+
+void this_capture_test() {
+	CaptureTest ct(20, -10, 10);
+	ct.print();
+	std::cout << ct.count_in_range() << std::endl;
+}
+
 
 int main() {
 	if (false) random_in_range_class_test();
 	if (false) random_in_range_lambda_test();
+	if (false) capture_by_copy_and_reference();
+	if (false) this_capture_test();
 
 	return 0;
 }
