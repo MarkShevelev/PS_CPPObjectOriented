@@ -46,9 +46,57 @@ void unordered_set_of_strings() {
 	cout << endl;
 }
 
+//для того, чтобы использовать в std::set собственные классы, нам было необходимо перегружать оператор <
+//для того, чтобы использовать в std::unordered_set собственые классы, нам необходимо перегружать оператор == и создать специальную хеш-функцию
+
+//пример
+struct InRagnePredicateHasher;
+
+class InRangePredicate final {
+public:
+	InRangePredicate(int min, int max): min(min), max(max) { }
+	bool operator()(int x) const { return x >= min && x <= max; }
+
+	//перегруженный оператор сравнения на совпадение
+	bool operator==(InRangePredicate const &oth) const { return min == oth.min && max == oth.max; }
+
+	friend std::ostream& operator<<(std::ostream &os, InRangePredicate const &p);
+	friend InRagnePredicateHasher;
+
+private:
+	int const min, max;
+};
+
+std::ostream& operator<<(std::ostream &os, InRangePredicate const &p) {
+	return os << "[" << p.min << "," << p.max << "]";
+}
+
+//класс, который представляет собой процесс хеширования, определения значения по данным объекта
+struct InRagnePredicateHasher final {
+	int operator()(InRangePredicate const &p) const { return p.min << 5 ^ p.max; }
+};
+
+void inrangepredicate_unordered_set() {
+	using namespace std;
+	unordered_set<InRangePredicate, InRagnePredicateHasher> predicate_set;
+	for (int counter = 0; counter != 5; ++counter) {
+		int user_min, user_max;
+		cin >> user_min >> user_max;
+		auto done = predicate_set.insert(InRangePredicate(user_min, user_max));
+		cout << (done.second ? "Inserted new range: " : "Range already exists: ") << *done.first << endl;
+	}
+
+	cout << "-------------------------" << endl;
+	for (auto const &p : predicate_set)
+		cout << p << '\n';
+	cout << endl;
+}
+
+
 int main() {
 	if (false) unordered_set_test();
 	if (false) unordered_set_of_strings();
+	if (false) inrangepredicate_unordered_set();
 
 	return 0;
 }
