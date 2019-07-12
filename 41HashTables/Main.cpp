@@ -73,7 +73,7 @@ std::ostream& operator<<(std::ostream &os, InRangePredicate const &p) {
 
 //класс, который представляет собой процесс хеширования, определения значения по данным объекта
 struct InRagnePredicateHasher final {
-	int operator()(InRangePredicate const &p) const { return p.min << 5 ^ p.max; }
+	int operator()(InRangePredicate const &p) const { return (p.min << 5) ^ p.max; }
 };
 
 void inrangepredicate_unordered_set() {
